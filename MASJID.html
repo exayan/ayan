@@ -1,0 +1,2513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Peer Mohalla Masjid Donation Management Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Scheherazade+New:wght@600;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <style>
+    :root {
+      --primary: #064e3b;
+      --primary-dark: #022c22;
+      --primary-light: #065f46;
+      --primary-surface: #ecfdf5;
+      --accent-gold: #d97706;
+      --gold-dark: #b45309;
+      --gold-light: #fbbf24;
+      --gold-surface: #fffbeb;
+      --gold-border: #fcd34d;
+      --bg-main: #f8fafc;
+      --bg-card: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --text-light: #94a3b8;
+      --border-color: #e2e8f0;
+      --border-hover: #cbd5e1;
+      --danger: #ef4444;
+      --danger-surface: #fef2f2;
+      --warning: #f59e0b;
+      --warning-surface: #fffbeb;
+      --success: #10b981;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+      --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08);
+      --shadow-lg: 0 10px 25px -3px rgba(6, 78, 59, 0.1);
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 18px;
+      --radius-xl: 24px;
+    }
+    [data-theme="dark"] {
+      --primary: #059669;
+      --primary-dark: #064e3b;
+      --primary-light: #10b981;
+      --primary-surface: #064e3b33;
+      --accent-gold: #f59e0b;
+      --gold-dark: #d97706;
+      --gold-light: #fde68a;
+      --gold-surface: #78350f22;
+      --gold-border: #92400e;
+      --bg-main: #091310;
+      --bg-card: #0f231d;
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --text-light: #64748b;
+      --border-color: #1e3a31;
+      --border-hover: #2d5a4c;
+      --danger: #f87171;
+      --danger-surface: #450a0a;
+      --warning: #fbbf24;
+      --warning-surface: #78350f33;
+      --shadow-lg: 0 10px 30px rgba(0,0,0,0.5);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      transition: background-color 0.3s, color 0.3s;
+    }
+    .mosque-header-wrap {
+      background: linear-gradient(135deg, #022c22 0%, #064e3b 50%, #065f46 100%);
+      color: #ffffff;
+      position: relative;
+      overflow: hidden;
+      border-bottom: 4px solid var(--accent-gold);
+      box-shadow: var(--shadow-lg);
+    }
+    .mosque-header-wrap::before {
+      content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      background-image: radial-gradient(rgba(217, 119, 6, 0.15) 1px, transparent 1px),
+                        radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+      background-size: 24px 24px; background-position: 0 0, 12px 12px;
+      opacity: 0.7; pointer-events: none;
+    }
+    .header-container { max-width: 1400px; margin: 0 auto; padding: 2rem 1.5rem 1.8rem 1.5rem; position: relative; z-index: 2; }
+    .bismillah { font-family: 'Amiri', serif; font-size: 2.1rem; color: var(--gold-light); text-align: center; margin-bottom: 0.4rem; letter-spacing: 1px; }
+    .bismillah-sub { text-align: center; font-size: 0.92rem; color: #cbd5e1; font-style: italic; margin-bottom: 1.2rem; }
+    .header-main-row { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.25rem; }
+    .masjid-title-area { display: flex; align-items: center; gap: 1.2rem; }
+    .masjid-emblem {
+      width: 68px; height: 68px;
+      background: linear-gradient(135deg, var(--gold-light), var(--accent-gold));
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      color: #022c22; box-shadow: 0 0 25px rgba(251, 191, 36, 0.45);
+      border: 3px solid #ffffff33; flex-shrink: 0;
+    }
+    .masjid-title-area h1 { font-size: 1.95rem; font-weight: 800; letter-spacing: -0.5px; line-height: 1.2; color: #ffffff; }
+    .masjid-title-area p { color: #a7f3d0; font-size: 0.92rem; font-weight: 500; display: flex; align-items: center; gap: 0.5rem; margin-top: 0.25rem; }
+    .header-quick-stats { display: flex; align-items: center; gap: 0.85rem; flex-wrap: wrap; }
+    .status-pill {
+      display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.45rem 0.9rem;
+      border-radius: 9999px; font-size: 0.82rem; font-weight: 600;
+      background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.2); color: #ffffff;
+    }
+    .status-pill.gold { background: rgba(217, 119, 6, 0.2); border-color: var(--accent-gold); color: var(--gold-light); }
+    .status-pill.warning-pill {
+      background: rgba(245, 158, 11, 0.25); border-color: var(--warning); color: #fef08a; cursor: pointer; transition: all 0.2s;
+    }
+    .status-pill.warning-pill:hover { background: rgba(245, 158, 11, 0.4); transform: translateY(-1px); }
+    .indicator-dot { width: 8px; height: 8px; border-radius: 50%; background: #10b981; box-shadow: 0 0 8px #10b981; animation: pulse 2s infinite; }
+    .indicator-dot.warning-dot { background: #f59e0b; box-shadow: 0 0 8px #f59e0b; }
+    @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(0.85); } }
+    .theme-toggle-btn {
+      background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.25);
+      color: #ffffff; padding: 0.5rem 0.9rem; border-radius: 9999px; cursor: pointer;
+      font-size: 0.85rem; display: flex; align-items: center; gap: 0.4rem; transition: all 0.2s;
+    }
+    .theme-toggle-btn:hover { background: rgba(255,255,255,0.22); transform: translateY(-1px); }
+    .main-container { max-width: 1400px; margin: 0 auto; padding: 2rem 1.5rem 4rem 1.5rem; width: 100%; flex: 1; }
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 1.25rem; margin-bottom: 2rem; }
+    .stat-card {
+      background: var(--bg-card); border-radius: var(--radius-lg); padding: 1.4rem;
+      border: 1px solid var(--border-color); box-shadow: var(--shadow-sm);
+      display: flex; align-items: center; gap: 1.1rem; position: relative; overflow: hidden;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .stat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+    .stat-card.highlight {
+      border-color: var(--accent-gold);
+      background: linear-gradient(145deg, var(--bg-card) 60%, var(--gold-surface));
+    }
+    .stat-card.highlight::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, var(--accent-gold), var(--gold-light)); }
+    .stat-card.pending-highlight {
+      border-color: var(--warning); background: linear-gradient(145deg, var(--bg-card) 60%, var(--warning-surface)); cursor: pointer;
+    }
+    .stat-card.pending-highlight::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, var(--warning), #fbbf24); }
+    .stat-icon-wrap { width: 52px; height: 52px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0; }
+    .stat-icon-wrap.emerald { background: var(--primary-surface); color: var(--primary); }
+    .stat-icon-wrap.gold { background: var(--gold-surface); color: var(--accent-gold); }
+    .stat-icon-wrap.blue { background: #eff6ff; color: #2563eb; }
+    .stat-icon-wrap.amber { background: #fef3c7; color: #b45309; }
+    .stat-info h3 { font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); margin-bottom: 0.2rem; font-weight: 700; }
+    .stat-info .stat-number { font-size: 1.65rem; font-weight: 800; color: var(--text-main); line-height: 1.2; }
+    .stat-info .stat-sub { font-size: 0.78rem; color: var(--text-light); margin-top: 0.2rem; }
+    .toolbar-section {
+      background: var(--bg-card); border-radius: var(--radius-xl); padding: 1.25rem 1.5rem;
+      border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); margin-bottom: 2rem;
+      display: flex; flex-direction: column; gap: 1.2rem;
+    }
+    .toolbar-primary-row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+    .btn-group { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+      padding: 0.65rem 1.25rem; border-radius: var(--radius-md); font-size: 0.92rem;
+      font-weight: 600; cursor: pointer; transition: all 0.2s; border: 1px solid transparent; outline: none; text-decoration: none; white-space: nowrap;
+    }
+    .btn:active { transform: scale(0.98); }
+    .btn-primary { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); color: #ffffff; box-shadow: 0 4px 14px rgba(6, 78, 59, 0.3); }
+    .btn-primary:hover { background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%); transform: translateY(-1px); }
+    .btn-gold { background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%); color: #ffffff; box-shadow: 0 4px 14px rgba(217, 119, 6, 0.35); border: 1px solid var(--gold-border); }
+    .btn-gold:hover { background: linear-gradient(135deg, #b45309 0%, #d97706 100%); transform: translateY(-1px); }
+    .btn-warning { background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%); color: #ffffff; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3); }
+    .btn-outline { background: var(--bg-card); color: var(--text-main); border: 1px solid var(--border-color); }
+    .btn-outline:hover { background: var(--bg-main); border-color: var(--border-hover); color: var(--primary); }
+    .btn-danger-outline { background: transparent; color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.3); }
+    .btn-danger-outline:hover { background: var(--danger-surface); border-color: var(--danger); }
+    .btn-sm { padding: 0.4rem 0.8rem; font-size: 0.82rem; border-radius: var(--radius-sm); }
+    .btn-xs { padding: 0.25rem 0.55rem; font-size: 0.75rem; border-radius: 6px; }
+    .filter-row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; padding-top: 1rem; border-top: 1px solid var(--border-color); }
+    .search-box-wrap { flex: 1; min-width: 260px; position: relative; }
+    .search-box-wrap svg { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-light); pointer-events: none; }
+    .search-input {
+      width: 100%; padding: 0.65rem 1rem 0.65rem 2.6rem; border-radius: var(--radius-md);
+      border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-main);
+      font-size: 0.92rem; outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .search-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(6, 78, 59, 0.15); background: var(--bg-card); }
+    .controls-filter-group { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+    .select-dropdown { padding: 0.65rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-main); font-size: 0.9rem; font-weight: 500; cursor: pointer; outline: none; }
+    .view-toggle { display: flex; background: var(--bg-main); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 3px; }
+    .view-toggle-btn { border: none; background: transparent; color: var(--text-muted); padding: 0.45rem 0.85rem; border-radius: 8px; cursor: pointer; font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; gap: 0.4rem; transition: all 0.2s; }
+    .view-toggle-btn.active { background: var(--bg-card); color: var(--primary); box-shadow: var(--shadow-sm); }
+    .section-divider { display: flex; align-items: center; justify-content: center; margin: 1.5rem 0 2rem 0; position: relative; }
+    .section-divider::before, .section-divider::after { content: ""; flex: 1; height: 1px; background: linear-gradient(90deg, transparent, var(--border-color), transparent); }
+    .section-divider-badge { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.35rem 1rem; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 9999px; color: var(--accent-gold); font-size: 0.82rem; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; box-shadow: var(--shadow-sm); }
+    .families-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(430px, 1fr)); gap: 1.75rem; }
+    .family-card {
+      background: var(--bg-card); border-radius: var(--radius-xl); border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-md); overflow: hidden; display: flex; flex-direction: column; position: relative;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .family-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); border-color: var(--border-hover); }
+    .family-card-arch-header { background: linear-gradient(135deg, #022c22 0%, #064e3b 100%); color: #ffffff; padding: 1.35rem 1.4rem; position: relative; border-bottom: 3px solid var(--accent-gold); }
+    .family-card-arch-header::after { content: ""; position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); width: 36px; height: 10px; background: var(--accent-gold); clip-path: polygon(50% 100%, 0 0, 100% 0); }
+    .card-top-meta { display: flex; justify-content: space-between; align-items: flex-start; gap: 0.75rem; margin-bottom: 0.6rem; }
+    .family-rank-badge { font-size: 0.75rem; font-weight: 700; color: var(--gold-light); letter-spacing: 0.5px; text-transform: uppercase; display: flex; align-items: center; gap: 0.35rem; }
+    .family-head-title { font-size: 1.28rem; font-weight: 800; color: #ffffff; letter-spacing: -0.3px; line-height: 1.3; word-break: break-word; }
+    .family-sum-banner { margin-top: 0.8rem; background: rgba(255, 255, 255, 0.08); border-radius: var(--radius-md); padding: 0.65rem 0.9rem; display: flex; align-items: center; justify-content: space-between; border: 1px solid rgba(251, 191, 36, 0.25); }
+    .family-sum-label { font-size: 0.78rem; color: #cbd5e1; text-transform: uppercase; font-weight: 600; }
+    .family-sum-amount { font-size: 1.35rem; font-weight: 800; color: var(--gold-light); letter-spacing: 0.2px; }
+    .card-actions-quick { display: flex; align-items: center; gap: 0.4rem; }
+    .card-actions-quick button { background: rgba(255,255,255,0.12); border: none; color: #ffffff; width: 32px; height: 32px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s, transform 0.15s; }
+    .card-actions-quick button:hover { background: rgba(255,255,255,0.25); transform: scale(1.05); }
+    .family-card-body { padding: 1.25rem 1.4rem; flex: 1; display: flex; flex-direction: column; }
+    .members-table-wrap { width: 100%; overflow-x: auto; margin-bottom: 1rem; }
+    .members-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.88rem; }
+    .members-table th { padding: 0.55rem 0.65rem; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--border-color); background: var(--bg-main); }
+    .members-table td { padding: 0.75rem 0.65rem; border-bottom: 1px solid var(--border-color); color: var(--text-main); vertical-align: middle; }
+    .members-table tr.clickable-member-row { cursor: pointer; transition: background-color 0.15s; }
+    .members-table tr.clickable-member-row:hover td { background-color: var(--primary-surface); }
+    .member-name-wrap { display: flex; flex-direction: column; gap: 0.15rem; }
+    .member-name { font-weight: 600; color: var(--text-main); display: flex; align-items: center; gap: 0.4rem; }
+    .member-name:hover { color: var(--primary); }
+    .donation-count-tag { font-size: 0.7rem; font-weight: 600; color: #047857; background: #d1fae5; padding: 1px 6px; border-radius: 9999px; display: inline-flex; align-items: center; gap: 3px; width: fit-content; }
+    .member-amount { font-weight: 800; color: var(--primary); text-align: right; white-space: nowrap; font-size: 0.95rem; }
+    .action-icons-cell { text-align: right; white-space: nowrap; }
+    .action-icon-btn { background: transparent; border: none; color: var(--text-muted); cursor: pointer; padding: 5px; border-radius: 6px; transition: color 0.15s, background 0.15s; }
+    .action-icon-btn:hover { color: var(--primary); background: var(--primary-surface); }
+    .action-icon-btn.delete:hover { color: var(--danger); background: var(--danger-surface); }
+    .family-card-footer { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; padding-top: 0.85rem; border-top: 1px solid var(--border-color); margin-top: auto; }
+    .master-table-card { background: var(--bg-card); border-radius: var(--radius-xl); border: 1px solid var(--border-color); box-shadow: var(--shadow-md); overflow: hidden; margin-bottom: 2rem; }
+    .master-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+    .master-table th { background: #022c22; color: #ffffff; padding: 0.85rem 1rem; font-weight: 700; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; text-align: left; }
+    .master-table td { padding: 0.85rem 1rem; border-bottom: 1px solid var(--border-color); color: var(--text-main); vertical-align: middle; }
+    .master-table tr:hover td { background-color: var(--primary-surface); }
+    .master-family-subtotal-row td { background-color: var(--gold-surface); font-weight: 700; color: var(--gold-dark); border-bottom: 2px solid var(--gold-border); }
+    .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.65); backdrop-filter: blur(4px); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 1rem; opacity: 0; transition: opacity 0.25s ease; }
+    .modal-overlay.active { display: flex; opacity: 1; }
+    .modal-box { background: var(--bg-card); border-radius: var(--radius-xl); width: 100%; max-width: 580px; border: 1px solid var(--border-color); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35); overflow: hidden; transform: translateY(20px) scale(0.97); transition: transform 0.25s; }
+    .modal-box.wide { max-width: 780px; }
+    .modal-overlay.active .modal-box { transform: translateY(0) scale(1); }
+    .modal-header { background: linear-gradient(135deg, #022c22, #064e3b); color: #ffffff; padding: 1.25rem 1.5rem; display: flex; align-items: center; justify-content: space-between; border-bottom: 3px solid var(--accent-gold); }
+    .modal-header h3 { font-size: 1.2rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem; }
+    .modal-close-btn { background: transparent; border: none; color: rgba(255,255,255,0.7); cursor: pointer; font-size: 1.25rem; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 8px; transition: all 0.2s; }
+    .modal-close-btn:hover { background: rgba(255,255,255,0.15); color: #ffffff; }
+    .modal-body { padding: 1.5rem; display: flex; flex-direction: column; gap: 1.2rem; max-height: 80vh; overflow-y: auto; }
+    .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+    .form-label { font-size: 0.85rem; font-weight: 600; color: var(--text-muted); display: flex; align-items: center; justify-content: space-between; }
+    .form-input, .form-select { padding: 0.7rem 0.9rem; border-radius: var(--radius-md); border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-main); font-size: 0.95rem; font-family: inherit; outline: none; transition: border-color 0.2s, box-shadow 0.2s; }
+    .form-input:focus, .form-select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(6, 78, 59, 0.15); background: var(--bg-card); }
+    .date-row { display: flex; gap: 0.5rem; }
+    .modal-footer { padding: 1.2rem 1.5rem; background: var(--bg-main); border-top: 1px solid var(--border-color); display: flex; align-items: center; justify-content: flex-end; gap: 0.75rem; }
+    .history-stat-banner { background: var(--primary-surface); border: 1px solid #a7f3d0; border-radius: var(--radius-md); padding: 1rem 1.2rem; display: flex; justify-content: space-between; align-items: center; }
+    .history-table, .pending-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+    .history-table th, .pending-table th { background: var(--bg-main); padding: 0.65rem 0.85rem; font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: var(--text-muted); border-bottom: 1px solid var(--border-color); }
+    .pending-table th { background: #78350f15; color: #b45309; border-bottom: 2px solid var(--gold-border); }
+    .history-table td, .pending-table td { padding: 0.75rem 0.85rem; border-bottom: 1px solid var(--border-color); vertical-align: middle; }
+    .receipt-container { background: #ffffff; color: #0f172a; border: 2px dashed var(--accent-gold); border-radius: var(--radius-lg); padding: 2rem; position: relative; }
+    .receipt-header { text-align: center; border-bottom: 1px solid #e2e8f0; padding-bottom: 1rem; margin-bottom: 1.2rem; }
+    .receipt-masjid-title { font-size: 1.35rem; font-weight: 800; color: #064e3b; }
+    .receipt-row { display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid #f1f5f9; font-size: 0.92rem; }
+    .receipt-total { font-size: 1.25rem; font-weight: 800; color: #064e3b; margin-top: 0.75rem; padding-top: 0.75rem; border-top: 2px solid #064e3b; }
+    .toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 2000; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
+    .toast { background: var(--bg-card); color: var(--text-main); border: 1px solid var(--border-color); border-left: 4px solid var(--primary); padding: 0.85rem 1.2rem; border-radius: var(--radius-md); box-shadow: 0 10px 25px rgba(0,0,0,0.15); display: flex; align-items: center; gap: 0.75rem; font-size: 0.9rem; font-weight: 500; transform: translateX(120%); transition: transform 0.3s; pointer-events: auto; }
+    .toast.show { transform: translateX(0); }
+    .toast.success { border-left-color: var(--success); }
+    .toast.error { border-left-color: var(--danger); }
+    .toast.gold { border-left-color: var(--accent-gold); }
+    #printReportArea { display: none; }
+    @media print {
+      body * { visibility: hidden; }
+      #printReportArea, #printReportArea * { visibility: visible; }
+      #printReportArea { display: block !important; position: absolute; left: 0; top: 0; width: 100%; background: #ffffff !important; color: #000000 !important; padding: 20px; font-family: Arial, sans-serif; }
+    }
+    .footer-bar { margin-top: auto; background: var(--bg-card); border-top: 1px solid var(--border-color); padding: 1.5rem; text-align: center; font-size: 0.85rem; color: var(--text-muted); }
+    @media (max-width: 768px) {
+      .header-container { padding: 1.5rem 1rem; }
+      .bismillah { font-size: 1.6rem; }
+      .masjid-title-area h1 { font-size: 1.5rem; }
+      .masjid-emblem { width: 52px; height: 52px; }
+      .families-grid { grid-template-columns: 1fr; }
+      .toolbar-section { padding: 1rem; }
+      .btn-group { width: 100%; }
+      .btn-group .btn { flex: 1; }
+    }
+  </style>
+</head>
+<body>
+  <input type="file" id="restoreFileInput" accept=".json" style="display:none" onchange="handleRestoreFile(event)">
+
+  <header class="mosque-header-wrap">
+    <div class="header-container">
+      <div class="bismillah">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
+      <div class="bismillah-sub">"In the name of Allah, the Most Gracious, the Most Merciful"</div>
+
+      <div class="header-main-row">
+        <div class="masjid-title-area">
+          <div class="masjid-emblem">
+            <svg width="38" height="38" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2C12 2 11 3 11 4C11 4.5 11.2 5 11.5 5.3C10.5 5.8 9.5 6.7 8.8 7.8C7.5 9.7 7 12 7 14.5V20H17V14.5C17 12 16.5 9.7 15.2 7.8C14.5 6.7 13.5 5.8 12.5 5.3C12.8 5 13 4.5 13 4C13 3 12 2 12 2ZM12 8C13.7 8 15 9.3 15 11V14H9V11C9 9.3 10.3 8 12 8ZM4 11H6V20H4V11ZM18 11H20V20H18V11ZM2 21H22V23H2V21ZM10 16H14V20H10V16Z"/>
+            </svg>
+          </div>
+          <div>
+            <h1>PEER MOHALLA MASJID DONATIONS</h1>
+            <p>
+              <span>🕌 Community Mosque Welfare & Construction Fund</span>
+              <span>•</span>
+              <span id="currentDateBadge">Today: 26-Sep-2026</span>
+            </p>
+          </div>
+        </div>
+
+        <div class="header-quick-stats">
+          <div class="status-pill warning-pill" onclick="openPendingDonationsModal()" title="View and Manage Pending Donations / Pledges">
+            <span class="indicator-dot warning-dot"></span>
+            <span>Pending: <b id="headerPendingStat">₹ 0</b></span>
+          </div>
+
+          <div class="status-pill gold">
+            <span class="indicator-dot"></span>
+            <span>Local DB Saved</span>
+          </div>
+
+          <button class="theme-toggle-btn" onclick="toggleTheme()" id="themeBtn">
+            <span id="themeIcon">🌙</span> <span id="themeLabel">Night Mode</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-container">
+    <section class="stats-grid">
+      <div class="stat-card highlight">
+        <div class="stat-icon-wrap gold">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="9"/>
+            <path d="M14.8 9A2 2 0 0 0 13 8h-2a2 2 0 0 0 0 4h2a2 2 0 0 1 0 4h-2a2 2 0 0 1-1.8-1"/>
+            <path d="M12 6v2m0 8v2"/>
+          </svg>
+        </div>
+        <div class="stat-info">
+          <h3>Total Received Collection</h3>
+          <div class="stat-number" id="grandTotalStat">₹0</div>
+          <div class="stat-sub">Audit Balanced & Verified</div>
+        </div>
+      </div>
+
+      <div class="stat-card pending-highlight" onclick="openPendingDonationsModal()" title="Click to view & add pending donations">
+        <div class="stat-icon-wrap amber">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <polyline points="12 6 12 12 16 14"/>
+          </svg>
+        </div>
+        <div class="stat-info">
+          <h3>Pending Donations</h3>
+          <div class="stat-number" id="kpiPendingAmountStat" style="color: #b45309;">₹0</div>
+          <div class="stat-sub" id="kpiPendingCountStat">0 Pledges Outstanding • Click to manage</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon-wrap emerald">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+        </div>
+        <div class="stat-info">
+          <h3>Contributing Families</h3>
+          <div class="stat-number" id="totalFamiliesStat">0</div>
+          <div class="stat-sub">Households Recorded</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon-wrap blue">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="8" r="5"/>
+            <path d="M20 21a8 8 0 1 0-16 0"/>
+          </svg>
+        </div>
+        <div class="stat-info">
+          <h3>Contributing Donors</h3>
+          <div class="stat-number" id="totalDonorsStat">0</div>
+          <div class="stat-sub">Family Members Registered</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="toolbar-section">
+      <div class="toolbar-primary-row">
+        <div class="btn-group">
+          <button class="btn btn-gold" onclick="openAddEntryModal()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            <span>➕ Add New Donation Entry</span>
+          </button>
+
+          <button class="btn btn-warning" onclick="openPendingDonationsModal()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            <span>Pending Donations</span>
+          </button>
+
+          <button class="btn btn-primary" onclick="openAddFamilyModal()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg>
+            <span>Add Family Head</span>
+          </button>
+        </div>
+
+        <div class="btn-group">
+          <button class="btn btn-outline" onclick="downloadWholeMasjidPDF()" title="Generate & Download Full PDF Report">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+            <span>Download All Families PDF</span>
+          </button>
+
+          <button class="btn btn-outline" onclick="exportToCSV()" title="Export all entries with notes to CSV">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            <span>Excel / CSV</span>
+          </button>
+
+          <button class="btn btn-outline" onclick="backupDatabase()" title="Save database backup JSON to your computer">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+            <span>Backup Data</span>
+          </button>
+
+          <button class="btn btn-outline" onclick="document.getElementById('restoreFileInput').click()" title="Restore database from JSON file">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+            <span>Restore Data</span>
+          </button>
+
+          <button class="btn btn-danger-outline btn-sm" onclick="resetToOriginalData()" title="Reset to Original PDF Records">
+            <span>🔄 Reset to Default</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="filter-row">
+        <div class="search-box-wrap">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input type="text" id="searchInput" class="search-input" placeholder="Search by Family Head, Member Name, Remarks, Date, or Amount..." oninput="handleSearch()">
+        </div>
+
+        <div class="controls-filter-group">
+          <label style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted);">Sort Families:</label>
+          <select id="sortSelect" class="select-dropdown" onchange="handleSortChange()">
+            <option value="amount_desc">Highest Family Total First</option>
+            <option value="amount_asc">Lowest Family Total First</option>
+            <option value="name_asc">Family Head (A to Z)</option>
+            <option value="members_desc">Most Family Members</option>
+            <option value="pdf_order">Original PDF Order</option>
+          </select>
+
+          <div class="view-toggle">
+            <button class="view-toggle-btn active" id="viewCardsBtn" onclick="switchView('cards')">
+              <span>🕌 Cards View</span>
+            </button>
+            <button class="view-toggle-btn" id="viewTableBtn" onclick="switchView('table')">
+              <span>📋 Master Sheet</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="section-divider">
+      <span class="section-divider-badge">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        <span>Masjid Donation Registers</span>
+      </span>
+    </div>
+
+    <section id="cardsViewContainer" class="families-grid"></section>
+
+    <section id="tableViewContainer" style="display: none;">
+      <div class="master-table-card">
+        <div style="overflow-x: auto;">
+          <table class="master-table">
+            <thead>
+              <tr>
+                <th style="width: 50px;">#</th>
+                <th>Family Head</th>
+                <th>Family Member</th>
+                <th>Donation Count</th>
+                <th>Last Date</th>
+                <th>Remarks / Notes</th>
+                <th style="text-align: right;">Total Donated (₹)</th>
+                <th style="text-align: right;">Family Total (₹)</th>
+                <th style="text-align: center; width: 110px;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="masterTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- MODAL 1: ADD NEW DONATION ENTRY -->
+  <div class="modal-overlay" id="addEntryModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+          <span>Record New Donation Entry</span>
+        </h3>
+        <button class="modal-close-btn" onclick="closeModal('addEntryModal')">&times;</button>
+      </div>
+
+      <form id="addEntryForm" onsubmit="handleSaveNewEntry(event)">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">
+              <span>1. Family Head Selection <b style="color:var(--danger)">*</b></span>
+            </label>
+            <div style="display: flex; gap: 1rem; margin-bottom: 0.4rem;">
+              <label style="font-size:0.9rem; display:flex; align-items:center; gap:0.35rem; cursor:pointer;">
+                <input type="radio" name="familySelectionType" id="famTypeExisting" value="existing" checked onchange="toggleFamilyMode()">
+                <span>Select Existing Family</span>
+              </label>
+              <label style="font-size:0.9rem; display:flex; align-items:center; gap:0.35rem; cursor:pointer;">
+                <input type="radio" name="familySelectionType" id="famTypeNew" value="new" onchange="toggleFamilyMode()">
+                <span>➕ Add New Family Head</span>
+              </label>
+            </div>
+
+            <select id="entryFamilySelect" class="form-select" onchange="handleEntryFamilyChange()">
+              <option value="" disabled selected>-- Select a Family Head --</option>
+            </select>
+            <input type="text" id="newFamilyHeadInput" class="form-input" placeholder="Enter New Family Head Full Name..." style="display:none; margin-top:0.4rem;">
+          </div>
+
+          <div class="form-group" id="memberSelectionGroup">
+            <label class="form-label">
+              <span>2. Family Member <b style="color:var(--danger)">*</b></span>
+              <span id="memberModeNotice" style="font-size:0.75rem; color:var(--text-light);">Select existing or create new</span>
+            </label>
+
+            <div id="existingMemberChoiceWrap" style="display: flex; gap: 1rem; margin-bottom: 0.4rem;">
+              <label style="font-size:0.88rem; display:flex; align-items:center; gap:0.35rem; cursor:pointer;">
+                <input type="radio" name="memberSelectionType" id="memTypeExisting" value="existing" checked onchange="toggleMemberMode()">
+                <span>Existing Member</span>
+              </label>
+              <label style="font-size:0.88rem; display:flex; align-items:center; gap:0.35rem; cursor:pointer;">
+                <input type="radio" name="memberSelectionType" id="memTypeNew" value="new" onchange="toggleMemberMode()">
+                <span>➕ Add New Member</span>
+              </label>
+            </div>
+
+            <select id="entryMemberSelect" class="form-select">
+              <option value="" disabled selected>-- First select a family above --</option>
+            </select>
+            <input type="text" id="entryNewMemberInput" class="form-input" placeholder="Enter Member Name (e.g. Asma, Tariq Ahmad)..." style="display:none; margin-top:0.4rem;">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="entryAmountInput">
+              <span>3. Donation Amount (₹) <b style="color:var(--danger)">*</b></span>
+              <span style="font-size:0.75rem; color:var(--text-light);">Contribution in Rupees</span>
+            </label>
+            <input type="number" id="entryAmountInput" class="form-input" placeholder="e.g. 5000" min="1" step="any" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="entryRemarksInput">
+              <span>4. Remarks / Note for this Donation</span>
+              <span style="font-size:0.75rem; color:var(--text-light);">(e.g. 2nd Installment, Roof Fund, Ramadan)</span>
+            </label>
+            <input type="text" id="entryRemarksInput" class="form-input" placeholder="Add specific notes or installment details...">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="entryDateInput">
+              <span>5. Entry Date <b style="color:var(--danger)">*</b></span>
+              <span style="font-size:0.75rem; color:var(--primary); font-weight:600;">⚡ Automatically Set to Today</span>
+            </label>
+            <div class="date-row">
+              <input type="date" id="entryDateInput" class="form-input" style="flex:1;" required>
+              <button type="button" class="btn btn-outline btn-sm" onclick="setEntryDateToToday()">Today</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="closeModal('addEntryModal')">Cancel</button>
+          <button type="submit" class="btn btn-gold">
+            <span>Confirm & Add to History</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL 2: MEMBER DONATION HISTORY MODAL -->
+  <div class="modal-overlay" id="memberHistoryModal">
+    <div class="modal-box wide">
+      <div class="modal-header">
+        <h3>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          <span id="historyModalTitle">Member Donation History</span>
+        </h3>
+        <button class="modal-close-btn" onclick="closeModal('memberHistoryModal')">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="history-stat-banner">
+          <div>
+            <div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Family Head</div>
+            <div id="historyFamilyHeadName" style="font-weight: 800; font-size: 1.15rem; color: var(--primary);">--</div>
+            <div id="historyMemberSub" style="font-size: 0.85rem; color: var(--text-muted); margin-top: 2px;">--</div>
+          </div>
+          <div style="text-align: right;">
+            <div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Total Donated</div>
+            <div id="historyMemberTotal" style="font-size: 1.6rem; font-weight: 800; color: var(--accent-gold);">₹ 0</div>
+          </div>
+        </div>
+
+        <div style="overflow-x: auto; border: 1px solid var(--border-color); border-radius: var(--radius-md);">
+          <table class="history-table">
+            <thead>
+              <tr>
+                <th style="width: 30px;">#</th>
+                <th style="width: 110px;">Date</th>
+                <th style="text-align: right; width: 130px;">Amount (₹)</th>
+                <th>Remarks / Notes</th>
+                <th style="text-align: center; width: 110px;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="memberHistoryTableBody"></tbody>
+          </table>
+        </div>
+
+        <div style="background: var(--bg-main); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.1rem;">
+          <h4 style="font-size: 0.92rem; font-weight: 700; color: var(--primary); margin-bottom: 0.75rem;">
+            <span>➕ Add New Installment / Donation to this Member</span>
+          </h4>
+          <form id="quickAddHistoryForm" onsubmit="handleQuickAddHistoryDonation(event)" style="display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: flex-end;">
+            <input type="hidden" id="quickHistoryFamilyId">
+            <input type="hidden" id="quickHistoryMemberId">
+            
+            <div style="flex: 1; min-width: 120px;">
+              <label style="font-size: 0.75rem; font-weight: 600; color: var(--text-muted);">Amount (₹) *</label>
+              <input type="number" id="quickHistoryAmount" class="form-input" style="padding: 0.5rem 0.75rem;" placeholder="Amount" min="1" required>
+            </div>
+
+            <div style="flex: 1.5; min-width: 160px;">
+              <label style="font-size: 0.75rem; font-weight: 600; color: var(--text-muted);">Remarks / Note</label>
+              <input type="text" id="quickHistoryRemarks" class="form-input" style="padding: 0.5rem 0.75rem;" placeholder="e.g. 2nd Installment">
+            </div>
+
+            <div style="flex: 1; min-width: 130px;">
+              <label style="font-size: 0.75rem; font-weight: 600; color: var(--text-muted);">Date *</label>
+              <input type="date" id="quickHistoryDate" class="form-input" style="padding: 0.5rem 0.75rem;" required>
+            </div>
+
+            <div>
+              <button type="submit" class="btn btn-primary btn-sm" style="padding: 0.6rem 1rem;">
+                <span>Add Donation</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" onclick="closeModal('memberHistoryModal')">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 3: PENDING DONATIONS MODAL -->
+  <div class="modal-overlay" id="pendingDonationsModal">
+    <div class="modal-box wide">
+      <div class="modal-header" style="background: linear-gradient(135deg, #78350f, #b45309);">
+        <h3>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          <span>Pending Donations & Pledges (Waada)</span>
+        </h3>
+        <button class="modal-close-btn" onclick="closeModal('pendingDonationsModal')">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <div style="background: #fffbeb; border: 1px solid var(--gold-border); border-radius: var(--radius-md); padding: 1rem 1.25rem; display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <div style="font-size: 0.78rem; text-transform: uppercase; color: #b45309; font-weight: 700;">Total Pending Pledges</div>
+            <div id="pendingModalTotalSum" style="font-size: 1.6rem; font-weight: 800; color: #b45309;">₹ 0</div>
+          </div>
+          <div style="text-align: right;">
+            <div style="font-size: 0.78rem; text-transform: uppercase; color: #92400e; font-weight: 700;">Pending Donors</div>
+            <div id="pendingModalCount" style="font-size: 1.3rem; font-weight: 800; color: var(--text-main);">0</div>
+          </div>
+        </div>
+
+        <div style="background: var(--bg-main); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.1rem;">
+          <h4 style="font-size: 0.95rem; font-weight: 700; color: #b45309; margin-bottom: 0.75rem;">
+            <span>➕ Record New Pending Donation / Pledge</span>
+          </h4>
+          <form id="addPendingForm" onsubmit="handleSaveNewPending(event)">
+            <input type="hidden" id="editPendingId" value="">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.75rem; margin-bottom: 0.75rem;">
+              <div>
+                <label style="font-size: 0.75rem; font-weight: 600; color: var(--text-muted);">Donor / Family Name *</label>
+                <input type="text" id="pendingNameInput" class="form-input" placeholder="e.g. Farooq Ahmad" required>
+              </div>
+
+              <div>
+                <label style="font-size: 0.75rem; font-weight: 600; color: var(--text-muted);">Pending Amount (₹) *</label>
+                <input type="number" id="pendingAmountInput" class="form-input" placeholder="e.g. 5000" min="1" step="any" required>
+              </div>
+
+              <div>
+                <label style="font-size: 0.75rem; font-weight: 600; color: var(--text-muted);">Expected / Promise Date</label>
+                <input type="date" id="pendingDateInput" class="form-input">
+              </div>
+            </div>
+
+            <div style="margin-bottom: 0.75rem;">
+              <label style="font-size: 0.75rem; font-weight: 600; color: var(--text-muted);">Remarks / Pledge Purpose *</label>
+              <input type="text" id="pendingRemarksInput" class="form-input" placeholder="e.g. Promised for Friday collection / Masjid floor tiles" required>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 0.5rem;">
+              <button type="button" id="cancelEditPendingBtn" class="btn btn-outline btn-sm" style="display: none;" onclick="cancelEditPending()">Cancel Edit</button>
+              <button type="submit" id="savePendingBtn" class="btn btn-warning btn-sm">
+                <span>Save Pending Donation</span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--text-main);">Current Outstanding Pledges:</h4>
+        <div style="overflow-x: auto; border: 1px solid var(--border-color); border-radius: var(--radius-md);">
+          <table class="pending-table">
+            <thead>
+              <tr>
+                <th style="width: 30px;">#</th>
+                <th>Donor / Family Name</th>
+                <th style="text-align: right; width: 120px;">Amount (₹)</th>
+                <th>Expected Date</th>
+                <th>Remarks / Notes</th>
+                <th style="text-align: center; width: 140px;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="pendingTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" onclick="closeModal('pendingDonationsModal')">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 4: EDIT SPECIFIC DONATION INSTALLMENT -->
+  <div class="modal-overlay" id="editDonationModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>Edit Donation Entry</h3>
+        <button class="modal-close-btn" onclick="closeModal('editDonationModal')">&times;</button>
+      </div>
+      <form id="editDonationForm" onsubmit="handleSaveEditDonation(event)">
+        <input type="hidden" id="editDonationFamId">
+        <input type="hidden" id="editDonationMemId">
+        <input type="hidden" id="editDonationDonId">
+
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Donor Name</label>
+            <input type="text" id="editDonationMemNameDisplay" class="form-input" readonly style="opacity: 0.7; background: var(--bg-main);">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="editDonationAmount">Donation Amount (₹) <b style="color:var(--danger)">*</b></label>
+            <input type="number" id="editDonationAmount" class="form-input" min="1" step="any" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="editDonationRemarks">Remarks / Note</label>
+            <input type="text" id="editDonationRemarks" class="form-input" placeholder="e.g. 1st Installment, Cash">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="editDonationDate">Date (DD-MM-YYYY) <b style="color:var(--danger)">*</b></label>
+            <input type="text" id="editDonationDate" class="form-input" placeholder="DD-MM-YYYY" required>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="closeModal('editDonationModal')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL 5: ADD NEW FAMILY HEAD -->
+  <div class="modal-overlay" id="addFamilyModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>Add New Family Head</h3>
+        <button class="modal-close-btn" onclick="closeModal('addFamilyModal')">&times;</button>
+      </div>
+
+      <form id="addFamilyForm" onsubmit="handleSaveNewFamily(event)">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" for="newFamilyHeadName">Family Head Full Name <b style="color:var(--danger)">*</b></label>
+            <input type="text" id="newFamilyHeadName" class="form-input" placeholder="e.g. GHULAM NABI BHAT" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="firstMemberName">First Family Member Name (Optional)</label>
+            <input type="text" id="firstMemberName" class="form-input" placeholder="Leave blank or enter first member">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="firstMemberAmount">Initial Donation (₹)</label>
+            <input type="number" id="firstMemberAmount" class="form-input" placeholder="0" min="0">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="firstMemberRemarks">Remarks / Note</label>
+            <input type="text" id="firstMemberRemarks" class="form-input" placeholder="e.g. Initial donation">
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="closeModal('addFamilyModal')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Create Family</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL 6: EDIT FAMILY HEAD -->
+  <div class="modal-overlay" id="editFamilyModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>Edit Family Head Name</h3>
+        <button class="modal-close-btn" onclick="closeModal('editFamilyModal')">&times;</button>
+      </div>
+      <form id="editFamilyForm" onsubmit="handleSaveEditFamily(event)">
+        <input type="hidden" id="targetFamilyId">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" for="editFamilyHeadInput">Family Head Name <b style="color:var(--danger)">*</b></label>
+            <input type="text" id="editFamilyHeadInput" class="form-input" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="closeModal('editFamilyModal')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Update Name</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL 7: EDIT MEMBER NAME -->
+  <div class="modal-overlay" id="editMemberNameModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>Rename Family Member</h3>
+        <button class="modal-close-btn" onclick="closeModal('editMemberNameModal')">&times;</button>
+      </div>
+      <form id="editMemberNameForm" onsubmit="handleSaveRenameMember(event)">
+        <input type="hidden" id="renameFamId">
+        <input type="hidden" id="renameMemId">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" for="renameMemberInput">Member Name <b style="color:var(--danger)">*</b></label>
+            <input type="text" id="renameMemberInput" class="form-input" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="closeModal('editMemberNameModal')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Name</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL 8: INDIVIDUAL DONATION RECEIPT -->
+  <div class="modal-overlay" id="receiptModal">
+    <div class="modal-box" style="max-width: 580px;">
+      <div class="modal-header">
+        <h3>Masjid Donation Official Receipt</h3>
+        <button class="modal-close-btn" onclick="closeModal('receiptModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div id="receiptPrintableArea" class="receipt-container">
+          <div class="receipt-header">
+            <div style="font-family:'Amiri', serif; font-size:1.4rem; color:var(--primary);">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
+            <div class="receipt-masjid-title">PEER MOHALLA MASJID COMMITTEE</div>
+            <div style="font-size:0.82rem; color:#64748b;">Community Welfare & Mosque Construction Fund • Kashmir</div>
+            <div style="display:inline-block; margin-top:0.4rem; background:#fef3c7; color:#b45309; padding:2px 10px; border-radius:9999px; font-weight:700; font-size:0.75rem;">
+              OFFICIAL DONATION VOUCHER
+            </div>
+          </div>
+
+          <div class="receipt-row">
+            <span style="color:#64748b;">Receipt No:</span>
+            <span id="rcptNumber" style="font-weight:700; font-family:monospace;">PMM-2026-0001</span>
+          </div>
+          <div class="receipt-row">
+            <span style="color:#64748b;">Date:</span>
+            <span id="rcptDate" style="font-weight:600;">-</span>
+          </div>
+          <div class="receipt-row">
+            <span style="color:#64748b;">Family Head:</span>
+            <span id="rcptFamilyHead" style="font-weight:700; text-transform:uppercase;">-</span>
+          </div>
+          <div class="receipt-row">
+            <span style="color:#64748b;">Donor / Member Name:</span>
+            <span id="rcptMemberName" style="font-weight:700; color:var(--primary);">-</span>
+          </div>
+          <div class="receipt-row">
+            <span style="color:#64748b;">Remarks / Notes:</span>
+            <span id="rcptRemarks">-</span>
+          </div>
+          <div class="receipt-row receipt-total">
+            <span>Total Donated:</span>
+            <span id="rcptAmount">₹0</span>
+          </div>
+
+          <div style="margin-top:1.5rem; display:flex; justify-content:space-between; align-items:flex-end; padding-top:1.5rem; border-top:1px dashed #cbd5e1; font-size:0.8rem; color:#64748b;">
+            <div style="text-align:center;">
+              <div style="width:120px; border-bottom:1px solid #94a3b8; margin-bottom:4px;"></div>
+              <div>Prepared By</div>
+            </div>
+            <div style="text-align:center;">
+              <div style="font-size:0.72rem; color:#059669; font-weight:700; border:1px solid #059669; padding:2px 6px; border-radius:4px; margin-bottom:4px;">VERIFIED & STAMPED</div>
+              <div>Masjid Cashier / Imam</div>
+            </div>
+          </div>
+          <div style="text-align:center; font-size:0.75rem; color:#94a3b8; margin-top:1rem; font-style:italic;">
+            "May Allah (SWT) accept this noble charity and bless your family with barakah."
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" onclick="closeModal('receiptModal')">Close</button>
+        <button type="button" class="btn btn-primary" onclick="printReceiptModal()">
+          <span>🖨️ Print Receipt</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="printReportArea"></div>
+  <div class="toast-container" id="toastContainer"></div>
+
+  <footer class="footer-bar">
+    <p>Peer Mohalla Masjid Donation Management System • Built with Mosque Theme & Offline Local Storage</p>
+    <p style="margin-top:0.3rem; font-size:0.78rem; color:var(--text-light);">All modifications are saved directly to your local computer storage.</p>
+  </footer>
+
+  <script>
+    const INITIAL_MASJID_DATA = [
+      {
+        "id": "fam_1",
+        "head": "MOHD ASHRAF MAGRAY",
+        "members": [
+          {"id": "m_1_1", "name": "Fareeda Banoo", "donations": [
+            {"id": "d_1_1_1", "amount": 20000, "date": "02-04-2026", "remarks": "Initial donation"}
+          ]},
+          {"id": "m_1_2", "name": "Ayan", "donations": [
+            {"id": "d_1_2_1", "amount": 10000, "date": "02-04-2026", "remarks": "Initial contribution"}
+          ]},
+          {"id": "m_1_3", "name": "Arhan", "donations": [
+            {"id": "d_1_3_1", "amount": 10000, "date": "02-04-2026", "remarks": "Initial contribution"}
+          ]}
+        ]
+      },
+      {
+        "id": "fam_2",
+        "head": "MUSHTAQ AHMAD SHAH",
+        "members": [
+          {"id": "m_2_1", "name": "Asma", "donations": [
+            {"id": "d_2_1_1", "amount": 3000, "date": "02-04-2026", "remarks": "1st Installment"},
+            {"id": "d_2_1_2", "amount": 500, "date": "02-04-2026", "remarks": "2nd Installment"}
+          ]},
+          {"id": "m_2_2", "name": "Mushtaq Ahmad Shah", "donations": [
+            {"id": "d_2_2_1", "amount": 25000, "date": "02-04-2026", "remarks": "Family head contribution"}
+          ]},
+          {"id": "m_2_3", "name": "Mehbooba Akther", "donations": [
+            {"id": "d_2_3_1", "amount": 2000, "date": "02-04-2026", "remarks": "1st Contribution"},
+            {"id": "d_2_3_2", "amount": 4000, "date": "02-04-2026", "remarks": "2nd Contribution"}
+          ]},
+          {"id": "m_2_4", "name": "Roshni Ara", "donations": [
+            {"id": "d_2_4_1", "amount": 1500, "date": "02-04-2026", "remarks": "1st Contribution"},
+            {"id": "d_2_4_2", "amount": 500, "date": "02-04-2026", "remarks": "2nd Contribution"}
+          ]},
+          {"id": "m_2_5", "name": "Tabasum Jan", "donations": [
+            {"id": "d_2_5_1", "amount": 1500, "date": "02-04-2026", "remarks": "Contribution"}
+          ]},
+          {"id": "m_2_6", "name": "Junaid", "donations": [
+            {"id": "d_2_6_1", "amount": 1000, "date": "02-04-2026", "remarks": "Contribution"}
+          ]},
+          {"id": "m_2_7", "name": "Fida", "donations": [
+            {"id": "d_2_7_1", "amount": 1400, "date": "03-04-2026", "remarks": "Contribution"}
+          ]}
+        ]
+      },
+      {
+        "id": "fam_3",
+        "head": "FEROZ AHMAD MAGRAY",
+        "members": [
+          {"id": "m_3_1", "name": "Feroz Ahmad Magray", "donations": [
+            {"id": "d_3_1_1", "amount": 3000, "date": "02-04-2026", "remarks": "1st Installment"},
+            {"id": "d_3_1_2", "amount": 1000, "date": "02-04-2026", "remarks": "2nd Installment"}
+          ]},
+          {"id": "m_3_2", "name": "Mubeena Banoo", "donations": [
+            {"id": "d_3_2_1", "amount": 1000, "date": "02-04-2026", "remarks": "1st Installment"},
+            {"id": "d_3_2_2", "amount": 20500, "date": "02-04-2026", "remarks": "Main Donation"}
+          ]},
+          {"id": "m_3_3", "name": "Fatima Begum", "donations": [
+            {"id": "d_3_3_1", "amount": 2000, "date": "02-04-2026", "remarks": "Contribution"}
+          ]}
+        ]
+      },
+      {
+        "id": "fam_4",
+        "head": "ABDUL RASHID SHAH",
+        "members": [
+          {"id": "m_4_1", "name": "Sajad Ahmad Shah", "donations": [
+            {"id": "d_4_1_1", "amount": 3000, "date": "02-04-2026", "remarks": "1st Installment"},
+            {"id": "d_4_1_2", "amount": 500, "date": "02-04-2026", "remarks": "2nd Installment"}
+          ]}
+        ]
+      },
+      {
+        "id": "fam_5",
+        "head": "KHURSHEED AHMAD SHAH",
+        "members": [
+          {"id": "m_5_1", "name": "Shah Imran", "donations": [
+            {"id": "d_5_1_1", "amount": 2000, "date": "02-04-2026", "remarks": "1st Installment"},
+            {"id": "d_5_1_2", "amount": 500, "date": "02-04-2026", "remarks": "2nd Installment"}
+          ]},
+          {"id": "m_5_2", "name": "Khursheed Ahmad Shah", "donations": [
+            {"id": "d_5_2_1", "amount": 3000, "date": "02-04-2026", "remarks": "Contribution"}
+          ]}
+        ]
+      },
+      {
+        "id": "fam_6",
+        "head": "SHAKEEL AHMAD SHAH",
+        "members": [
+          {"id": "m_6_1", "name": "Shakeel Ahmad Shah", "donations": [
+            {"id": "d_6_1_1", "amount": 40000, "date": "08-04-2026", "remarks": "Main Donation"}
+          ]},
+          {"id": "m_6_2", "name": "Nighat", "donations": [
+            {"id": "d_6_2_1", "amount": 2000, "date": "02-04-2026", "remarks": "1st Installment"},
+            {"id": "d_6_2_2", "amount": 28000, "date": "02-04-2026", "remarks": "Main Installment"}
+          ]}
+        ]
+      },
+      {
+        "id": "fam_7",
+        "head": "SHABIR AHMAD SHAH",
+        "members": [
+          {"id": "m_7_1", "name": "Shabir Ahmad Shah", "donations": [
+            {"id": "d_7_1_1", "amount": 4000, "date": "02-04-2026", "remarks": "Contribution"}
+          ]}
+        ]
+      },
+      {
+        "id": "fam_8",
+        "head": "MOHD AYOUB SHAH",
+        "members": [
+          {"id": "m_8_1", "name": "Mohd Tahir Shah", "donations": [
+            {"id": "d_8_1_1", "amount": 30000, "date": "02-04-2026", "remarks": "Contribution"}
+          ]},
+          {"id": "m_8_2", "name": "Nigeena Akther", "donations": [
+            {"id": "d_8_2_1", "amount": 10000, "date": "02-04-2026", "remarks": "Contribution"}
+          ]},
+          {"id": "m_8_3", "name": "Mohd Ayoub Shah", "donations": [
+            {"id": "d_8_3_1", "amount": 50000, "date": "02-04-2026", "remarks": "Family Head Main Contribution"}
+          ]}
+        ]
+      },
+      {
+        "id": "fam_9",
+        "head": "MUSHTAQ AHMAD SHAH (Rohil's Family)",
+        "members": [
+          {"id": "m_9_1", "name": "Rohil", "donations": [
+            {"id": "d_9_1_1", "amount": 1000, "date": "02-04-2026", "remarks": "1st Installment"},
+            {"id": "d_9_1_2", "amount": 1000, "date": "02-04-2026", "remarks": "2nd Installment"}
+          ]}
+        ]
+      },
+      {
+        "id": "fam_10",
+        "head": "MOHD IQBAL SHAH",
+        "members": [
+          {"id": "m_10_1", "name": "Mohd Iqbal Shah", "donations": [
+            {"id": "d_10_1_1", "amount": 10000, "date": "02-04-2026", "remarks": "1st Installment"},
+            {"id": "d_10_1_2", "amount": 15500, "date": "02-04-2026", "remarks": "2nd Installment"}
+          ]}
+        ]
+      },
+      {
+        "id": "fam_11",
+        "head": "FAYAZ AHMAD MAGRAY",
+        "members": [
+          {"id": "m_11_1", "name": "Fayaz Ahmad Magray", "donations": [
+            {"id": "d_11_1_1", "amount": 1000, "date": "02-04-2026", "remarks": "Contribution"}
+          ]},
+          {"id": "m_11_2", "name": "Aabid Fayaz", "donations": [
+            {"id": "d_11_2_1", "amount": 500, "date": "02-04-2026", "remarks": "Contribution"}
+          ]}
+        ]
+      }
+    ];
+
+    const INITIAL_PENDING_DATA = [
+      {
+        "id": "p_1",
+        "name": "Ghulam Mohammad Wani",
+        "amount": 5000,
+        "date": "2026-10-05",
+        "remarks": "Pledged for upcoming Friday Jummah collection"
+      },
+      {
+        "id": "p_2",
+        "name": "Abdul Gani Bhat",
+        "amount": 10000,
+        "date": "2026-10-15",
+        "remarks": "Pledged for Masjid heating & carpet replacement"
+      }
+    ];
+
+    const STORAGE_KEY_DONATIONS = 'peer_mohalla_masjid_donations_v3';
+    const STORAGE_KEY_PENDING = 'peer_mohalla_masjid_pending_v1';
+
+    let masjidData = [];
+    let pendingDonations = [];
+    let currentSort = 'amount_desc';
+    let searchQuery = '';
+    let currentView = 'cards';
+
+    function formatMoney(amount) {
+      const num = Number(amount) || 0;
+      return '₹ ' + num.toLocaleString('en-IN');
+    }
+
+    function getMemberTotal(member) {
+      if (!member || !member.donations) return Number(member?.amount) || 0;
+      return member.donations.reduce((sum, d) => sum + (Number(d.amount) || 0), 0);
+    }
+
+    function getFamilyTotal(family) {
+      if (!family || !family.members) return 0;
+      return family.members.reduce((sum, m) => sum + getMemberTotal(m), 0);
+    }
+
+    function getMemberLastDate(member) {
+      if (!member || !member.donations || member.donations.length === 0) return member?.date || '-';
+      return member.donations[member.donations.length - 1].date || '-';
+    }
+
+    function getMemberRemarksSummary(member) {
+      if (!member || !member.donations || member.donations.length === 0) return '-';
+      return member.donations.map(d => d.remarks).filter(Boolean).join(', ') || '-';
+    }
+
+    function getTodayDateISO() {
+      const today = new Date();
+      const yyyy = today.getFullYear();
+      const mm = String(today.getMonth() + 1).padStart(2, '0');
+      const dd = String(today.getDate()).padStart(2, '0');
+      return `${yyyy}-${mm}-${dd}`;
+    }
+
+    function getTodayDateFormatted() {
+      const today = new Date();
+      const dd = String(today.getDate()).padStart(2, '0');
+      const mm = String(today.getMonth() + 1).padStart(2, '0');
+      const yyyy = today.getFullYear();
+      return `${dd}-${mm}-${yyyy}`;
+    }
+
+    function isoToDisplayDate(isoDate) {
+      if (!isoDate) return getTodayDateFormatted();
+      if (isoDate.includes('-') && isoDate.split('-')[0].length === 4) {
+        const parts = isoDate.split('-');
+        return `${parts[2]}-${parts[1]}-${parts[0]}`;
+      }
+      return isoDate;
+    }
+
+    function loadData() {
+      try {
+        const savedDonations = localStorage.getItem(STORAGE_KEY_DONATIONS);
+        if (savedDonations) {
+          masjidData = JSON.parse(savedDonations);
+          masjidData.forEach(f => {
+            (f.members || []).forEach(m => {
+              if (!m.donations) {
+                m.donations = [{
+                  id: 'd_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+                  amount: Number(m.amount) || 0,
+                  date: m.date || getTodayDateFormatted(),
+                  remarks: m.breakdown || 'Donation'
+                }];
+              }
+            });
+          });
+        } else {
+          masjidData = JSON.parse(JSON.stringify(INITIAL_MASJID_DATA));
+          saveDonations();
+        }
+
+        const savedPending = localStorage.getItem(STORAGE_KEY_PENDING);
+        if (savedPending) {
+          pendingDonations = JSON.parse(savedPending);
+        } else {
+          pendingDonations = JSON.parse(JSON.stringify(INITIAL_PENDING_DATA));
+          savePending();
+        }
+      } catch (err) {
+        console.error('Error loading localStorage:', err);
+        masjidData = JSON.parse(JSON.stringify(INITIAL_MASJID_DATA));
+        pendingDonations = JSON.parse(JSON.stringify(INITIAL_PENDING_DATA));
+      }
+      renderApp();
+    }
+
+    function saveDonations() {
+      try {
+        localStorage.setItem(STORAGE_KEY_DONATIONS, JSON.stringify(masjidData));
+      } catch (e) {
+        console.error(e);
+        showToast('Error saving donations to local database!', 'error');
+      }
+    }
+
+    function savePending() {
+      try {
+        localStorage.setItem(STORAGE_KEY_PENDING, JSON.stringify(pendingDonations));
+      } catch (e) {
+        console.error(e);
+        showToast('Error saving pending donations to local database!', 'error');
+      }
+    }
+
+    function updateStats() {
+      let grandTotal = 0;
+      let totalDonors = 0;
+
+      masjidData.forEach(family => {
+        grandTotal += getFamilyTotal(family);
+        totalDonors += (family.members || []).length;
+      });
+
+      let totalPending = pendingDonations.reduce((sum, p) => sum + (Number(p.amount) || 0), 0);
+
+      document.getElementById('grandTotalStat').textContent = formatMoney(grandTotal);
+      document.getElementById('totalFamiliesStat').textContent = masjidData.length;
+      document.getElementById('totalDonorsStat').textContent = totalDonors;
+
+      document.getElementById('headerPendingStat').textContent = formatMoney(totalPending);
+      document.getElementById('kpiPendingAmountStat').textContent = formatMoney(totalPending);
+      document.getElementById('kpiPendingCountStat').textContent = `${pendingDonations.length} Pledges Outstanding • Click to manage`;
+
+      const todayFormatted = getTodayDateFormatted();
+      const badge = document.getElementById('currentDateBadge');
+      if (badge) badge.textContent = `Today: ${todayFormatted}`;
+    }
+
+    function renderApp() {
+      updateStats();
+      if (currentView === 'cards') {
+        renderCardsView();
+      } else {
+        renderTableView();
+      }
+    }
+
+    function getFilteredAndSortedFamilies() {
+      let result = JSON.parse(JSON.stringify(masjidData));
+
+      if (searchQuery.trim() !== '') {
+        const q = searchQuery.toLowerCase().trim();
+        result = result.filter(family => {
+          const matchHead = family.head.toLowerCase().includes(q);
+          const matchMember = (family.members || []).some(m => {
+            const nameMatch = m.name.toLowerCase().includes(q);
+            const donationMatch = (m.donations || []).some(d => 
+              (d.date && d.date.toLowerCase().includes(q)) || 
+              (d.remarks && d.remarks.toLowerCase().includes(q)) || 
+              String(d.amount).includes(q)
+            );
+            return nameMatch || donationMatch;
+          });
+          return matchHead || matchMember;
+        });
+      }
+
+      if (currentSort === 'amount_desc') {
+        result.sort((a, b) => getFamilyTotal(b) - getFamilyTotal(a));
+      } else if (currentSort === 'amount_asc') {
+        result.sort((a, b) => getFamilyTotal(a) - getFamilyTotal(b));
+      } else if (currentSort === 'name_asc') {
+        result.sort((a, b) => a.head.localeCompare(b.head));
+      } else if (currentSort === 'members_desc') {
+        result.sort((a, b) => (b.members || []).length - (a.members || []).length);
+      }
+
+      return result;
+    }
+
+    function renderCardsView() {
+      const container = document.getElementById('cardsViewContainer');
+      const families = getFilteredAndSortedFamilies();
+
+      if (families.length === 0) {
+        container.innerHTML = `
+          <div style="grid-column: 1/-1; text-align: center; padding: 4rem 1rem; background: var(--bg-card); border-radius: var(--radius-xl); border: 1px dashed var(--border-color);">
+            <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🔍</div>
+            <h3 style="color: var(--text-main); font-size: 1.2rem;">No Families Found</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.25rem;">Try adjusting your search criteria or add a new entry.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = families.map((family, idx) => {
+        const famTotal = getFamilyTotal(family);
+        const members = family.members || [];
+
+        return `
+          <div class="family-card" id="card_${family.id}">
+            <div class="family-card-arch-header">
+              <div class="card-top-meta">
+                <span class="family-rank-badge">
+                  <span>FAMILY #${idx + 1}</span>
+                  <span>•</span>
+                  <span>${members.length} Member${members.length !== 1 ? 's' : ''}</span>
+                </span>
+                <div class="card-actions-quick">
+                  <button onclick="downloadFamilyPDF('${family.id}')" title="Download Family PDF Slip">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                  </button>
+                  <button onclick="openEditFamilyModal('${family.id}')" title="Edit Family Head Name">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                  </button>
+                  <button onclick="confirmDeleteFamily('${family.id}')" title="Delete Entire Family" style="color: #fca5a5;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                  </button>
+                </div>
+              </div>
+
+              <div class="family-head-title">${family.head}</div>
+
+              <div class="family-sum-banner">
+                <span class="family-sum-label">Family Total Contribution</span>
+                <span class="family-sum-amount">${formatMoney(famTotal)}</span>
+              </div>
+            </div>
+
+            <div class="family-card-body">
+              <div class="members-table-wrap">
+                <table class="members-table">
+                  <thead>
+                    <tr>
+                      <th style="width: 25px;">#</th>
+                      <th>Family Member (Click for History)</th>
+                      <th style="text-align: right;">Total Donated</th>
+                      <th style="text-align: right; width: 65px;">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${members.map((m, mIdx) => {
+                      const mTotal = getMemberTotal(m);
+                      const dCount = (m.donations || []).length;
+                      const lastDate = getMemberLastDate(m);
+
+                      return `
+                        <tr class="clickable-member-row" onclick="openMemberHistoryModal('${family.id}', '${m.id}')" title="Click to view full donation history with dates and notes">
+                          <td style="color: var(--text-light); font-size: 0.78rem;">${mIdx + 1}</td>
+                          <td>
+                            <div class="member-name-wrap">
+                              <div class="member-name">
+                                <span>${m.name}</span>
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--primary);"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                              </div>
+                              <div style="display:flex; align-items:center; gap:0.4rem;">
+                                <span class="donation-count-tag">${dCount} donation${dCount !== 1 ? 's' : ''}</span>
+                                <span style="font-size:0.73rem; color:var(--text-light);">${lastDate}</span>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="member-amount">${formatMoney(mTotal)}</div>
+                          </td>
+                          <td class="action-icons-cell" onclick="event.stopPropagation()">
+                            <button class="action-icon-btn" onclick="openMemberHistoryModal('${family.id}', '${m.id}')" title="View History">
+                              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                            </button>
+                            <button class="action-icon-btn" onclick="openRenameMemberModal('${family.id}', '${m.id}')" title="Rename Member">
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                            </button>
+                            <button class="action-icon-btn delete" onclick="confirmDeleteMember('${family.id}', '${m.id}')" title="Delete Member">
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                            </button>
+                          </td>
+                        </tr>
+                      `;
+                    }).join('')}
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="family-card-footer">
+                <button class="btn btn-outline btn-sm" onclick="openAddEntryModal('${family.id}')">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                  <span>Add Donation / Member</span>
+                </button>
+                <button class="btn btn-outline btn-sm" onclick="downloadFamilyPDF('${family.id}')">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                  <span>Family PDF</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderTableView() {
+      const tbody = document.getElementById('masterTableBody');
+      const families = getFilteredAndSortedFamilies();
+
+      if (families.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding: 2rem;">No matching donations found.</td></tr>`;
+        return;
+      }
+
+      let rowsHtml = '';
+      let rowCounter = 1;
+
+      families.forEach(family => {
+        const famTotal = getFamilyTotal(family);
+        const members = family.members || [];
+
+        members.forEach((m, mIdx) => {
+          const mTotal = getMemberTotal(m);
+          const dCount = (m.donations || []).length;
+          const lastDate = getMemberLastDate(m);
+          const remarksSummary = getMemberRemarksSummary(m);
+
+          rowsHtml += `
+            <tr class="clickable-member-row" onclick="openMemberHistoryModal('${family.id}', '${m.id}')" title="Click to view history">
+              <td>${rowCounter++}</td>
+              <td style="font-weight: 700; color: var(--primary);">${family.head}</td>
+              <td style="font-weight: 600;">
+                <span>${m.name}</span>
+                <span style="font-size:0.75rem; color:var(--primary); margin-left:4px;">🔍</span>
+              </td>
+              <td><span class="donation-count-tag">${dCount} donation${dCount !== 1 ? 's' : ''}</span></td>
+              <td>${lastDate}</td>
+              <td style="max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${remarksSummary}">${remarksSummary}</td>
+              <td style="text-align: right; font-weight: 800; color: var(--primary);">${formatMoney(mTotal)}</td>
+              <td style="text-align: right; color: var(--text-muted);">${mIdx === 0 ? formatMoney(famTotal) : ''}</td>
+              <td style="text-align: center;" onclick="event.stopPropagation()">
+                <button class="action-icon-btn" onclick="openMemberHistoryModal('${family.id}', '${m.id}')" title="History">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                </button>
+                <button class="action-icon-btn" onclick="openRenameMemberModal('${family.id}', '${m.id}')" title="Rename">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                </button>
+                <button class="action-icon-btn delete" onclick="confirmDeleteMember('${family.id}', '${m.id}')" title="Delete">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                </button>
+              </td>
+            </tr>
+          `;
+        });
+
+        rowsHtml += `
+          <tr class="master-family-subtotal-row">
+            <td colspan="6" style="text-align: right; text-transform: uppercase;">Total for ${family.head}:</td>
+            <td colspan="2" style="text-align: right; font-size: 1rem;">${formatMoney(famTotal)}</td>
+            <td style="text-align: center;">
+              <button class="btn btn-outline btn-xs" onclick="downloadFamilyPDF('${family.id}')">PDF</button>
+            </td>
+          </tr>
+        `;
+      });
+
+      tbody.innerHTML = rowsHtml;
+    }
+
+    function switchView(view) {
+      currentView = view;
+      const cardsCont = document.getElementById('cardsViewContainer');
+      const tableCont = document.getElementById('tableViewContainer');
+      const cardsBtn = document.getElementById('viewCardsBtn');
+      const tableBtn = document.getElementById('viewTableBtn');
+
+      if (view === 'cards') {
+        cardsCont.style.display = 'grid';
+        tableCont.style.display = 'none';
+        cardsBtn.classList.add('active');
+        tableBtn.classList.remove('active');
+        renderCardsView();
+      } else {
+        cardsCont.style.display = 'none';
+        tableCont.style.display = 'block';
+        cardsBtn.classList.remove('active');
+        tableBtn.classList.add('active');
+        renderTableView();
+      }
+    }
+
+    function handleSearch() {
+      searchQuery = document.getElementById('searchInput').value;
+      renderApp();
+    }
+
+    function handleSortChange() {
+      currentSort = document.getElementById('sortSelect').value;
+      renderApp();
+    }
+
+    function openModal(id) {
+      const el = document.getElementById(id);
+      if (el) el.classList.add('active');
+    }
+
+    function closeModal(id) {
+      const el = document.getElementById(id);
+      if (el) el.classList.remove('active');
+    }
+
+    function setEntryDateToToday() {
+      const input = document.getElementById('entryDateInput');
+      if (input) input.value = getTodayDateISO();
+    }
+
+    function openAddEntryModal(preselectedFamilyId = null) {
+      const select = document.getElementById('entryFamilySelect');
+      select.innerHTML = '<option value="" disabled selected>-- Select an Existing Family Head --</option>' + 
+        masjidData.map(f => `<option value="${f.id}">${f.head} (${(f.members || []).length} members)</option>`).join('');
+
+      document.getElementById('famTypeExisting').checked = true;
+      document.getElementById('entryFamilySelect').style.display = 'block';
+      document.getElementById('newFamilyHeadInput').style.display = 'none';
+      document.getElementById('newFamilyHeadInput').value = '';
+
+      document.getElementById('memTypeExisting').checked = true;
+      document.getElementById('entryMemberSelect').style.display = 'block';
+      document.getElementById('entryNewMemberInput').style.display = 'none';
+      document.getElementById('entryNewMemberInput').value = '';
+
+      document.getElementById('entryAmountInput').value = '';
+      document.getElementById('entryRemarksInput').value = '';
+      setEntryDateToToday();
+
+      if (preselectedFamilyId) {
+        select.value = preselectedFamilyId;
+        handleEntryFamilyChange();
+      } else {
+        document.getElementById('entryMemberSelect').innerHTML = '<option value="" disabled selected>-- First select a family above --</option>';
+      }
+
+      openModal('addEntryModal');
+    }
+
+    function toggleFamilyMode() {
+      const isNew = document.getElementById('famTypeNew').checked;
+      const famSelect = document.getElementById('entryFamilySelect');
+      const newFamInput = document.getElementById('newFamilyHeadInput');
+      const memChoiceWrap = document.getElementById('existingMemberChoiceWrap');
+      const memSelect = document.getElementById('entryMemberSelect');
+      const newMemInput = document.getElementById('entryNewMemberInput');
+
+      if (isNew) {
+        famSelect.style.display = 'none';
+        newFamInput.style.display = 'block';
+        newFamInput.required = true;
+        famSelect.required = false;
+
+        memChoiceWrap.style.display = 'none';
+        memSelect.style.display = 'none';
+        memSelect.required = false;
+        newMemInput.style.display = 'block';
+        newMemInput.required = true;
+      } else {
+        famSelect.style.display = 'block';
+        newFamInput.style.display = 'none';
+        newFamInput.required = false;
+        famSelect.required = true;
+
+        memChoiceWrap.style.display = 'flex';
+        toggleMemberMode();
+        handleEntryFamilyChange();
+      }
+    }
+
+    function handleEntryFamilyChange() {
+      const familyId = document.getElementById('entryFamilySelect').value;
+      const memSelect = document.getElementById('entryMemberSelect');
+      memSelect.innerHTML = '';
+
+      if (!familyId) {
+        memSelect.innerHTML = '<option value="" disabled selected>-- First select a family above --</option>';
+        return;
+      }
+
+      const family = masjidData.find(f => f.id === familyId);
+      if (family && family.members && family.members.length > 0) {
+        memSelect.innerHTML = '<option value="" disabled selected>-- Select an Existing Member --</option>' + 
+          family.members.map(m => `<option value="${m.id}">${m.name} (Total: ${formatMoney(getMemberTotal(m))})</option>`).join('');
+      } else {
+        memSelect.innerHTML = '<option value="" disabled selected>-- No existing members in this family --</option>';
+        document.getElementById('memTypeNew').checked = true;
+        toggleMemberMode();
+      }
+    }
+
+    function toggleMemberMode() {
+      const isNew = document.getElementById('memTypeNew').checked;
+      const memSelect = document.getElementById('entryMemberSelect');
+      const newMemInput = document.getElementById('entryNewMemberInput');
+
+      if (isNew) {
+        memSelect.style.display = 'none';
+        memSelect.required = false;
+        newMemInput.style.display = 'block';
+        newMemInput.required = true;
+      } else {
+        memSelect.style.display = 'block';
+        memSelect.required = true;
+        newMemInput.style.display = 'none';
+        newMemInput.required = false;
+      }
+    }
+
+    function handleSaveNewEntry(e) {
+      e.preventDefault();
+
+      const isNewFamily = document.getElementById('famTypeNew').checked;
+      let family;
+
+      if (isNewFamily) {
+        const headName = document.getElementById('newFamilyHeadInput').value.trim();
+        if (!headName) {
+          showToast('Please enter Family Head Name!', 'error');
+          return;
+        }
+        family = {
+          id: 'fam_' + Date.now(),
+          head: headName.toUpperCase(),
+          members: []
+        };
+        masjidData.unshift(family);
+      } else {
+        const famId = document.getElementById('entryFamilySelect').value;
+        family = masjidData.find(f => f.id === famId);
+        if (!family) {
+          showToast('Please select a Family Head!', 'error');
+          return;
+        }
+      }
+
+      const isNewMember = isNewFamily || document.getElementById('memTypeNew').checked;
+      let member;
+
+      if (isNewMember) {
+        const memberName = document.getElementById('entryNewMemberInput').value.trim();
+        if (!memberName) {
+          showToast('Please enter Member Name!', 'error');
+          return;
+        }
+        member = {
+          id: 'm_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+          name: memberName,
+          donations: []
+        };
+        family.members.push(member);
+      } else {
+        const memberId = document.getElementById('entryMemberSelect').value;
+        member = family.members.find(m => m.id === memberId);
+        if (!member) {
+          showToast('Please select an existing member!', 'error');
+          return;
+        }
+      }
+
+      const amount = Number(document.getElementById('entryAmountInput').value);
+      const remarks = document.getElementById('entryRemarksInput').value.trim() || 'Contribution';
+      const rawDate = document.getElementById('entryDateInput').value;
+      const formattedDate = isoToDisplayDate(rawDate);
+
+      if (!amount || amount <= 0) {
+        showToast('Please enter a valid amount!', 'error');
+        return;
+      }
+
+      if (!member.donations) member.donations = [];
+      const newDonation = {
+        id: 'd_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+        amount: amount,
+        date: formattedDate,
+        remarks: remarks
+      };
+      member.donations.push(newDonation);
+
+      saveDonations();
+      renderApp();
+      closeModal('addEntryModal');
+      showToast(`Added ${formatMoney(amount)} to ${member.name}'s history (${family.head})`, 'success');
+    }
+
+    function openMemberHistoryModal(familyId, memberId) {
+      const family = masjidData.find(f => f.id === familyId);
+      if (!family) return;
+      const member = family.members.find(m => m.id === memberId);
+      if (!member) return;
+
+      document.getElementById('historyModalTitle').textContent = `${member.name}'s Donation History`;
+      document.getElementById('historyFamilyHeadName').textContent = family.head;
+      document.getElementById('historyMemberSub').textContent = `Member: ${member.name} • Total ${(member.donations || []).length} records`;
+      document.getElementById('historyMemberTotal').textContent = formatMoney(getMemberTotal(member));
+
+      document.getElementById('quickHistoryFamilyId').value = familyId;
+      document.getElementById('quickHistoryMemberId').value = memberId;
+      document.getElementById('quickHistoryAmount').value = '';
+      document.getElementById('quickHistoryRemarks').value = '';
+      document.getElementById('quickHistoryDate').value = getTodayDateISO();
+
+      renderMemberHistoryTable(family, member);
+      openModal('memberHistoryModal');
+    }
+
+    function renderMemberHistoryTable(family, member) {
+      const tbody = document.getElementById('memberHistoryTableBody');
+      const donations = member.donations || [];
+
+      if (donations.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:1.5rem; color:var(--text-light);">No donation records found.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = donations.map((d, idx) => `
+        <tr>
+          <td style="color:var(--text-light); font-size:0.8rem;">${idx + 1}</td>
+          <td style="font-weight:600;">${d.date || '-'}</td>
+          <td style="text-align:right; font-weight:800; color:var(--primary); font-size:0.95rem;">${formatMoney(d.amount)}</td>
+          <td>
+            <span style="background:var(--bg-main); padding:2px 8px; border-radius:4px; border:1px solid var(--border-color); font-size:0.8rem;">
+              ${d.remarks || 'Donation'}
+            </span>
+          </td>
+          <td style="text-align:center;">
+            <button class="action-icon-btn" onclick="openReceiptModalForDonation('${family.id}', '${member.id}', '${d.id}')" title="Receipt">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7"></path><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+            </button>
+            <button class="action-icon-btn" onclick="openEditDonationModal('${family.id}', '${member.id}', '${d.id}')" title="Edit">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+            </button>
+            <button class="action-icon-btn delete" onclick="confirmDeleteDonation('${family.id}', '${member.id}', '${d.id}')" title="Delete">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+            </button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function handleQuickAddHistoryDonation(e) {
+      e.preventDefault();
+      const famId = document.getElementById('quickHistoryFamilyId').value;
+      const memId = document.getElementById('quickHistoryMemberId').value;
+      const amount = Number(document.getElementById('quickHistoryAmount').value);
+      const remarks = document.getElementById('quickHistoryRemarks').value.trim() || 'Installment';
+      const rawDate = document.getElementById('quickHistoryDate').value;
+      const date = isoToDisplayDate(rawDate);
+
+      const family = masjidData.find(f => f.id === famId);
+      if (!family) return;
+      const member = family.members.find(m => m.id === memId);
+      if (!member) return;
+
+      if (!member.donations) member.donations = [];
+      member.donations.push({
+        id: 'd_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+        amount: amount,
+        date: date,
+        remarks: remarks
+      });
+
+      saveDonations();
+      renderApp();
+      openMemberHistoryModal(famId, memId);
+      showToast(`Added ${formatMoney(amount)} to ${member.name}'s history!`, 'success');
+    }
+
+    function openEditDonationModal(famId, memId, donId) {
+      const family = masjidData.find(f => f.id === famId);
+      if (!family) return;
+      const member = family.members.find(m => m.id === memId);
+      if (!member) return;
+      const donation = (member.donations || []).find(d => d.id === donId);
+      if (!donation) return;
+
+      document.getElementById('editDonationFamId').value = famId;
+      document.getElementById('editDonationMemId').value = memId;
+      document.getElementById('editDonationDonId').value = donId;
+      document.getElementById('editDonationMemNameDisplay').value = `${member.name} (${family.head})`;
+      document.getElementById('editDonationAmount').value = donation.amount;
+      document.getElementById('editDonationRemarks').value = donation.remarks || '';
+      document.getElementById('editDonationDate').value = donation.date || getTodayDateFormatted();
+
+      openModal('editDonationModal');
+    }
+
+    function handleSaveEditDonation(e) {
+      e.preventDefault();
+      const famId = document.getElementById('editDonationFamId').value;
+      const memId = document.getElementById('editDonationMemId').value;
+      const donId = document.getElementById('editDonationDonId').value;
+      const amount = Number(document.getElementById('editDonationAmount').value);
+      const remarks = document.getElementById('editDonationRemarks').value.trim() || 'Donation';
+      const date = document.getElementById('editDonationDate').value.trim();
+
+      const family = masjidData.find(f => f.id === famId);
+      if (!family) return;
+      const member = family.members.find(m => m.id === memId);
+      if (!member) return;
+      const donation = (member.donations || []).find(d => d.id === donId);
+      if (!donation) return;
+
+      donation.amount = amount;
+      donation.remarks = remarks;
+      donation.date = date;
+
+      saveDonations();
+      renderApp();
+      closeModal('editDonationModal');
+      openMemberHistoryModal(famId, memId);
+      showToast('Donation details updated!', 'success');
+    }
+
+    function confirmDeleteDonation(famId, memId, donId) {
+      const family = masjidData.find(f => f.id === famId);
+      if (!family) return;
+      const member = family.members.find(m => m.id === memId);
+      if (!member) return;
+      const donation = (member.donations || []).find(d => d.id === donId);
+      if (!donation) return;
+
+      if (confirm(`Remove this installment of ${formatMoney(donation.amount)} on ${donation.date}?`)) {
+        member.donations = member.donations.filter(d => d.id !== donId);
+        saveDonations();
+        renderApp();
+        openMemberHistoryModal(famId, memId);
+        showToast('Donation installment removed.', 'gold');
+      }
+    }
+
+    function openPendingDonationsModal() {
+      renderPendingTable();
+      cancelEditPending();
+      openModal('pendingDonationsModal');
+    }
+
+    function renderPendingTable() {
+      const tbody = document.getElementById('pendingTableBody');
+      const totalSum = pendingDonations.reduce((s, p) => s + (Number(p.amount) || 0), 0);
+
+      document.getElementById('pendingModalTotalSum').textContent = formatMoney(totalSum);
+      document.getElementById('pendingModalCount').textContent = pendingDonations.length;
+
+      if (pendingDonations.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:1.5rem; color:var(--text-light);">No pending donations or pledges currently recorded.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = pendingDonations.map((p, idx) => `
+        <tr>
+          <td style="color:var(--text-light); font-size:0.8rem;">${idx + 1}</td>
+          <td style="font-weight:700; color:#b45309;">${p.name}</td>
+          <td style="text-align:right; font-weight:800; color:#d97706; font-size:0.95rem;">${formatMoney(p.amount)}</td>
+          <td style="font-size:0.85rem;">${p.date || 'Open'}</td>
+          <td><span style="background:#fffbeb; padding:2px 8px; border-radius:4px; border:1px solid #fde68a; font-size:0.82rem;">${p.remarks || '-'}</span></td>
+          <td style="text-align:center;">
+            <button class="action-icon-btn" onclick="startEditPending('${p.id}')" title="Edit Pending Pledge">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+            </button>
+            <button class="action-icon-btn" onclick="convertPendingToDonation('${p.id}')" title="Mark as Received / Paid" style="color:var(--success);">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </button>
+            <button class="action-icon-btn delete" onclick="confirmDeletePending('${p.id}')" title="Delete">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+            </button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function handleSaveNewPending(e) {
+      e.preventDefault();
+      const editId = document.getElementById('editPendingId').value;
+      const name = document.getElementById('pendingNameInput').value.trim();
+      const amount = Number(document.getElementById('pendingAmountInput').value);
+      const date = document.getElementById('pendingDateInput').value;
+      const remarks = document.getElementById('pendingRemarksInput').value.trim();
+
+      if (!name || !amount) {
+        showToast('Please enter donor name and amount!', 'error');
+        return;
+      }
+
+      if (editId) {
+        const item = pendingDonations.find(p => p.id === editId);
+        if (item) {
+          item.name = name;
+          item.amount = amount;
+          item.date = date;
+          item.remarks = remarks;
+          showToast(`Updated pending record for ${name}!`, 'success');
+        }
+      } else {
+        pendingDonations.unshift({
+          id: 'p_' + Date.now(),
+          name: name,
+          amount: amount,
+          date: date || getTodayDateISO(),
+          remarks: remarks
+        });
+        showToast(`Recorded pending donation of ${formatMoney(amount)} for ${name}!`, 'gold');
+      }
+
+      savePending();
+      renderPendingTable();
+      updateStats();
+      cancelEditPending();
+    }
+
+    function startEditPending(id) {
+      const item = pendingDonations.find(p => p.id === id);
+      if (!item) return;
+
+      document.getElementById('editPendingId').value = item.id;
+      document.getElementById('pendingNameInput').value = item.name;
+      document.getElementById('pendingAmountInput').value = item.amount;
+      document.getElementById('pendingDateInput').value = item.date || '';
+      document.getElementById('pendingRemarksInput').value = item.remarks || '';
+
+      document.getElementById('savePendingBtn').innerHTML = '<span>Update Pledge</span>';
+      document.getElementById('cancelEditPendingBtn').style.display = 'inline-block';
+      document.getElementById('pendingNameInput').focus();
+    }
+
+    function cancelEditPending() {
+      document.getElementById('editPendingId').value = '';
+      document.getElementById('pendingNameInput').value = '';
+      document.getElementById('pendingAmountInput').value = '';
+      document.getElementById('pendingDateInput').value = getTodayDateISO();
+      document.getElementById('pendingRemarksInput').value = '';
+
+      document.getElementById('savePendingBtn').innerHTML = '<span>Save Pending Donation</span>';
+      document.getElementById('cancelEditPendingBtn').style.display = 'none';
+    }
+
+    function confirmDeletePending(id) {
+      const item = pendingDonations.find(p => p.id === id);
+      if (!item) return;
+
+      if (confirm(`Delete pending record for ${item.name} (${formatMoney(item.amount)})?`)) {
+        pendingDonations = pendingDonations.filter(p => p.id !== id);
+        savePending();
+        renderPendingTable();
+        updateStats();
+        showToast('Pending record deleted.', 'gold');
+      }
+    }
+
+    function convertPendingToDonation(id) {
+      const item = pendingDonations.find(p => p.id === id);
+      if (!item) return;
+
+      if (confirm(`Mark ${item.name}'s pledge of ${formatMoney(item.amount)} as RECEIVED and convert to confirmed donation?`)) {
+        closeModal('pendingDonationsModal');
+        openAddEntryModal();
+        document.getElementById('famTypeNew').checked = true;
+        toggleFamilyMode();
+        document.getElementById('newFamilyHeadInput').value = item.name.toUpperCase();
+        document.getElementById('entryNewMemberInput').value = item.name;
+        document.getElementById('entryAmountInput').value = item.amount;
+        document.getElementById('entryRemarksInput').value = `Received from pledge: ${item.remarks}`;
+        
+        pendingDonations = pendingDonations.filter(p => p.id !== id);
+        savePending();
+        updateStats();
+        showToast('Please confirm family details to finalize conversion.', 'gold');
+      }
+    }
+
+    function openAddFamilyModal() {
+      document.getElementById('newFamilyHeadName').value = '';
+      document.getElementById('firstMemberName').value = '';
+      document.getElementById('firstMemberAmount').value = '';
+      document.getElementById('firstMemberRemarks').value = '';
+      openModal('addFamilyModal');
+    }
+
+    function handleSaveNewFamily(e) {
+      e.preventDefault();
+      const headName = document.getElementById('newFamilyHeadName').value.trim();
+      const mName = document.getElementById('firstMemberName').value.trim();
+      const mAmount = Number(document.getElementById('firstMemberAmount').value) || 0;
+      const mRemarks = document.getElementById('firstMemberRemarks').value.trim() || 'Initial contribution';
+
+      if (!headName) return;
+
+      const newFamily = {
+        id: 'fam_' + Date.now(),
+        head: headName.toUpperCase(),
+        members: []
+      };
+
+      if (mName && mAmount > 0) {
+        newFamily.members.push({
+          id: 'm_' + Date.now() + '_1',
+          name: mName,
+          donations: [
+            {
+              id: 'd_' + Date.now() + '_init',
+              amount: mAmount,
+              date: getTodayDateFormatted(),
+              remarks: mRemarks
+            }
+          ]
+        });
+      }
+
+      masjidData.unshift(newFamily);
+      saveDonations();
+      renderApp();
+      closeModal('addFamilyModal');
+      showToast(`Family ${newFamily.head} created successfully!`, 'success');
+    }
+
+    function openEditFamilyModal(familyId) {
+      const family = masjidData.find(f => f.id === familyId);
+      if (!family) return;
+      document.getElementById('targetFamilyId').value = familyId;
+      document.getElementById('editFamilyHeadInput').value = family.head;
+      openModal('editFamilyModal');
+    }
+
+    function handleSaveEditFamily(e) {
+      e.preventDefault();
+      const familyId = document.getElementById('targetFamilyId').value;
+      const newHead = document.getElementById('editFamilyHeadInput').value.trim();
+      const family = masjidData.find(f => f.id === familyId);
+      if (family && newHead) {
+        family.head = newHead.toUpperCase();
+        saveDonations();
+        renderApp();
+        closeModal('editFamilyModal');
+        showToast(`Family head updated to ${family.head}`, 'success');
+      }
+    }
+
+    function confirmDeleteFamily(familyId) {
+      const family = masjidData.find(f => f.id === familyId);
+      if (!family) return;
+
+      if (confirm(`WARNING: Are you sure you want to delete the entire record for ${family.head} (${(family.members || []).length} members)?`)) {
+        masjidData = masjidData.filter(f => f.id !== familyId);
+        saveDonations();
+        renderApp();
+        showToast(`Family ${family.head} deleted.`, 'error');
+      }
+    }
+
+    function openRenameMemberModal(famId, memId) {
+      const family = masjidData.find(f => f.id === famId);
+      if (!family) return;
+      const member = family.members.find(m => m.id === memId);
+      if (!member) return;
+
+      document.getElementById('renameFamId').value = famId;
+      document.getElementById('renameMemId').value = memId;
+      document.getElementById('renameMemberInput').value = member.name;
+      openModal('editMemberNameModal');
+    }
+
+    function handleSaveRenameMember(e) {
+      e.preventDefault();
+      const famId = document.getElementById('renameFamId').value;
+      const memId = document.getElementById('renameMemId').value;
+      const newName = document.getElementById('renameMemberInput').value.trim();
+
+      const family = masjidData.find(f => f.id === famId);
+      if (!family) return;
+      const member = family.members.find(m => m.id === memId);
+      if (!member || !newName) return;
+
+      member.name = newName;
+      saveDonations();
+      renderApp();
+      closeModal('editMemberNameModal');
+      showToast(`Member renamed to ${newName}`, 'success');
+    }
+
+    function confirmDeleteMember(familyId, memberId) {
+      const family = masjidData.find(f => f.id === familyId);
+      if (!family) return;
+      const member = family.members.find(m => m.id === memberId);
+      if (!member) return;
+
+      if (confirm(`Are you sure you want to remove ${member.name} (${formatMoney(getMemberTotal(member))}) from ${family.head}'s family record?`)) {
+        family.members = family.members.filter(m => m.id !== memberId);
+        saveDonations();
+        renderApp();
+        showToast(`Member ${member.name} removed.`, 'gold');
+      }
+    }
+
+    function openReceiptModalForDonation(famId, memId, donId) {
+      const family = masjidData.find(f => f.id === famId);
+      if (!family) return;
+      const member = family.members.find(m => m.id === memId);
+      if (!member) return;
+      const donation = (member.donations || []).find(d => d.id === donId);
+      if (!donation) return;
+
+      document.getElementById('rcptNumber').textContent = 'PMM-' + Math.floor(100000 + Math.random() * 900000);
+      document.getElementById('rcptDate').textContent = donation.date || getTodayDateFormatted();
+      document.getElementById('rcptFamilyHead').textContent = family.head;
+      document.getElementById('rcptMemberName').textContent = member.name;
+      document.getElementById('rcptRemarks').textContent = donation.remarks || 'Masjid Donation';
+      document.getElementById('rcptAmount').textContent = formatMoney(donation.amount);
+
+      openModal('receiptModal');
+    }
+
+    function printReceiptModal() {
+      const content = document.getElementById('receiptPrintableArea').innerHTML;
+      const printWin = window.open('', '_blank', 'width=700,height=750');
+      printWin.document.write(
+        '<!DOCTYPE html><html><head><title>Donation Receipt - Peer Mohalla Masjid</title>' +
+        '<style>' +
+        'body { font-family: Arial, sans-serif; padding: 30px; margin: 0; color: #000; }' +
+        '.receipt-container { border: 2px dashed #d97706; padding: 25px; border-radius: 12px; }' +
+        '.receipt-header { text-align: center; border-bottom: 1px solid #e2e8f0; padding-bottom: 15px; margin-bottom: 20px; }' +
+        '.receipt-masjid-title { font-size: 1.5rem; font-weight: 800; color: #064e3b; }' +
+        '.receipt-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f1f5f9; font-size: 1rem; }' +
+        '.receipt-total { font-size: 1.3rem; font-weight: 800; color: #064e3b; margin-top: 15px; padding-top: 12px; border-top: 2px solid #064e3b; }' +
+        '</style></head><body>' +
+        '<div class="receipt-container">' + content + '</div>' +
+        '<script>window.onload = function() { window.print(); window.close(); };<\/script>' +
+        '</body></html>'
+      );
+      printWin.document.close();
+    }
+
+    function downloadWholeMasjidPDF() {
+      showToast('Preparing Complete Masjid Donation PDF Report...', 'gold');
+
+      let grandTotal = 0;
+      let totalMembers = 0;
+      masjidData.forEach(f => {
+        grandTotal += getFamilyTotal(f);
+        totalMembers += (f.members || []).length;
+      });
+
+      const element = document.createElement('div');
+      element.style.padding = '30px';
+      element.style.fontFamily = 'Arial, sans-serif';
+      element.style.color = '#111827';
+      element.style.backgroundColor = '#ffffff';
+
+      let html = `
+        <div style="text-align: center; border-bottom: 2px solid #064e3b; padding-bottom: 15px; margin-bottom: 20px;">
+          <div style="font-size: 20px; color: #064e3b; font-weight: bold; margin-bottom: 4px;">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
+          <h1 style="font-size: 24px; color: #064e3b; margin: 0; text-transform: uppercase; letter-spacing: 0.5px;">PEER MOHALLA MASJID DONATION AUDIT REPORT</h1>
+          <p style="font-size: 12px; color: #4b5563; margin-top: 5px;">Comprehensive Family & Donor Record • Generated on ${getTodayDateFormatted()}</p>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; background: #f0fdf4; border: 1px solid #bbf7d0; padding: 12px 18px; border-radius: 8px; margin-bottom: 25px;">
+          <div><b>Total Families:</b> ${masjidData.length}</div>
+          <div><b>Total Donors:</b> ${totalMembers}</div>
+          <div><b>Grand Total Collection:</b> <span style="font-size: 16px; color: #064e3b; font-weight: bold;">${formatMoney(grandTotal)}</span></div>
+        </div>
+      `;
+
+      masjidData.forEach((family, idx) => {
+        const famTotal = getFamilyTotal(family);
+        html += `
+          <div style="margin-bottom: 22px; page-break-inside: avoid; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden;">
+            <div style="background: #064e3b; color: #ffffff; padding: 8px 14px; display: flex; justify-content: space-between; align-items: center;">
+              <span style="font-weight: bold; font-size: 14px;">${idx + 1}. FAMILY HEAD: ${family.head}</span>
+              <span style="font-weight: bold; font-size: 14px; color: #fde68a;">Family Total: ${formatMoney(famTotal)}</span>
+            </div>
+            <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
+              <thead>
+                <tr style="background: #f9fafb; border-bottom: 1px solid #e5e7eb;">
+                  <th style="padding: 6px 10px; text-align: left; width: 30px;">#</th>
+                  <th style="padding: 6px 10px; text-align: left;">Family Member Name</th>
+                  <th style="padding: 6px 10px; text-align: left;">Remarks / Notes</th>
+                  <th style="padding: 6px 10px; text-align: left; width: 100px;">Last Date</th>
+                  <th style="padding: 6px 10px; text-align: right; width: 120px;">Total (₹)</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${family.members.map((m, mIdx) => `
+                  <tr style="border-bottom: 1px solid #f3f4f6;">
+                    <td style="padding: 6px 10px; color: #6b7280;">${mIdx + 1}</td>
+                    <td style="padding: 6px 10px; font-weight: 600;">${m.name}</td>
+                    <td style="padding: 6px 10px; color: #4b5563;">${getMemberRemarksSummary(m)}</td>
+                    <td style="padding: 6px 10px; color: #4b5563;">${getMemberLastDate(m)}</td>
+                    <td style="padding: 6px 10px; text-align: right; font-weight: bold; color: #064e3b;">${formatMoney(getMemberTotal(m))}</td>
+                  </tr>
+                `).join('')}
+                <tr style="background: #fffbeb; font-weight: bold;">
+                  <td colspan="4" style="padding: 7px 10px; text-align: right; text-transform: uppercase;">Total for ${family.head}:</td>
+                  <td style="padding: 7px 10px; text-align: right; color: #b45309;">${formatMoney(famTotal)}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        `;
+      });
+
+      html += `
+        <div style="margin-top: 30px; padding-top: 15px; border-top: 2px solid #064e3b; display: flex; justify-content: space-between; font-size: 12px; color: #4b5563;">
+          <div>Certified By: Masjid Intizamia Committee</div>
+          <div>Audited & Reconciled Grand Total: <b>${formatMoney(grandTotal)}</b></div>
+        </div>
+      `;
+
+      element.innerHTML = html;
+
+      const opt = {
+        margin: [10, 10, 10, 10],
+        filename: `Peer_Mohalla_Masjid_Donations_Whole_Report_${getTodayDateFormatted()}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      };
+
+      if (window.html2pdf) {
+        html2pdf().set(opt).from(element).save().then(() => {
+          showToast('Whole Masjid Donation PDF Downloaded!', 'success');
+        }).catch(err => {
+          console.error(err);
+          fallbackPrint(element.innerHTML, 'Peer Mohalla Masjid Full Donations Report');
+        });
+      } else {
+        fallbackPrint(element.innerHTML, 'Peer Mohalla Masjid Full Donations Report');
+      }
+    }
+
+    function downloadFamilyPDF(familyId) {
+      const family = masjidData.find(f => f.id === familyId);
+      if (!family) return;
+
+      const famTotal = getFamilyTotal(family);
+      showToast(`Generating PDF for ${family.head}...`, 'gold');
+
+      const element = document.createElement('div');
+      element.style.padding = '35px';
+      element.style.fontFamily = 'Arial, sans-serif';
+      element.style.color = '#111827';
+      element.style.backgroundColor = '#ffffff';
+
+      element.innerHTML = `
+        <div style="border: 2px solid #064e3b; border-radius: 12px; padding: 25px;">
+          <div style="text-align: center; border-bottom: 2px solid #d97706; padding-bottom: 15px; margin-bottom: 20px;">
+            <div style="font-size: 22px; color: #064e3b; font-weight: bold; margin-bottom: 5px;">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
+            <h1 style="font-size: 22px; color: #064e3b; margin: 0; text-transform: uppercase;">PEER MOHALLA MASJID COMMITTEE</h1>
+            <p style="font-size: 13px; color: #6b7280; margin-top: 4px;">Official Family Contribution Statement • Certificate of Donation</p>
+          </div>
+
+          <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <div style="font-size: 11px; text-transform: uppercase; color: #64748b; font-weight: bold;">Family Head</div>
+              <div style="font-size: 18px; font-weight: bold; color: #064e3b; margin-top: 2px;">${family.head}</div>
+            </div>
+            <div style="text-align: right;">
+              <div style="font-size: 11px; text-transform: uppercase; color: #64748b; font-weight: bold;">Family Total Contribution</div>
+              <div style="font-size: 22px; font-weight: bold; color: #d97706; margin-top: 2px;">${formatMoney(famTotal)}</div>
+            </div>
+          </div>
+
+          <table style="width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 25px;">
+            <thead>
+              <tr style="background: #064e3b; color: #ffffff;">
+                <th style="padding: 10px; text-align: left; width: 40px;">#</th>
+                <th style="padding: 10px; text-align: left;">Family Member Name</th>
+                <th style="padding: 10px; text-align: left;">Remarks / Notes</th>
+                <th style="padding: 10px; text-align: left; width: 110px;">Date</th>
+                <th style="padding: 10px; text-align: right; width: 120px;">Amount (₹)</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${family.members.map((m, mIdx) => `
+                <tr style="border-bottom: 1px solid #e5e7eb; background: ${mIdx % 2 === 0 ? '#ffffff' : '#f9fafb'};">
+                  <td style="padding: 10px; color: #6b7280;">${mIdx + 1}</td>
+                  <td style="padding: 10px; font-weight: bold; color: #1f2937;">${m.name}</td>
+                  <td style="padding: 10px; color: #4b5563;">${getMemberRemarksSummary(m)}</td>
+                  <td style="padding: 10px; color: #4b5563;">${getMemberLastDate(m)}</td>
+                  <td style="padding: 10px; text-align: right; font-weight: bold; color: #064e3b;">${formatMoney(getMemberTotal(m))}</td>
+                </tr>
+              `).join('')}
+              <tr style="background: #fef3c7; font-weight: bold; font-size: 14px; border-top: 2px solid #d97706;">
+                <td colspan="4" style="padding: 12px; text-align: right; text-transform: uppercase;">Total Family Donation:</td>
+                <td style="padding: 12px; text-align: right; color: #b45309;">${formatMoney(famTotal)}</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div style="margin-top: 40px; display: flex; justify-content: space-between; align-items: flex-end; padding-top: 20px; border-top: 1px dashed #cbd5e1; font-size: 12px; color: #4b5563;">
+            <div style="text-align: center;">
+              <div style="width: 150px; border-bottom: 1px solid #6b7280; margin-bottom: 5px;"></div>
+              <div>Accountant / Secretary</div>
+            </div>
+            <div style="text-align: center;">
+              <div style="display: inline-block; padding: 4px 12px; border: 1.5px solid #064e3b; border-radius: 6px; font-weight: bold; color: #064e3b; margin-bottom: 6px;">OFFICIAL MASJID SEAL</div>
+              <div>Peer Mohalla Intizamia Committee</div>
+            </div>
+          </div>
+          <div style="text-align: center; font-size: 11px; color: #9ca3af; margin-top: 20px; font-style: italic;">
+            "JazakAllah Khair for your generous contribution to Peer Mohalla Masjid. May Allah grant barakah in your wealth and family."
+          </div>
+        </div>
+      `;
+
+      const safeName = family.head.replace(/[^a-zA-Z0-9]/g, '_');
+      const opt = {
+        margin: [10, 10, 10, 10],
+        filename: `Masjid_Donation_${safeName}_${getTodayDateFormatted()}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      };
+
+      if (window.html2pdf) {
+        html2pdf().set(opt).from(element).save().then(() => {
+          showToast(`PDF Statement for ${family.head} Downloaded!`, 'success');
+        }).catch(err => {
+          console.error(err);
+          fallbackPrint(element.innerHTML, `Donation Statement - ${family.head}`);
+        });
+      } else {
+        fallbackPrint(element.innerHTML, `Donation Statement - ${family.head}`);
+      }
+    }
+
+    function fallbackPrint(htmlContent, title) {
+      const printWin = window.open('', '_blank');
+      printWin.document.write(
+        '<!DOCTYPE html><html><head><title>' + title + '</title>' +
+        '<style>body { font-family: Arial, sans-serif; padding: 20px; color: #000; }' +
+        '@media print { body { padding: 0; } }</style></head><body>' +
+        htmlContent +
+        '<script>window.onload = function() { window.print(); window.close(); };<\/script>' +
+        '</body></html>'
+      );
+      printWin.document.close();
+    }
+
+    function exportToCSV() {
+      let csv = 'Family ID,Family Head,Member ID,Member Name,Donation ID,Date,Remarks / Notes,Amount (INR)\n';
+
+      masjidData.forEach(family => {
+        (family.members || []).forEach(m => {
+          (m.donations || []).forEach(d => {
+            const row = [
+              `"${family.id}"`,
+              `"${(family.head || '').replace(/"/g, '""')}"`,
+              `"${m.id}"`,
+              `"${(m.name || '').replace(/"/g, '""')}"`,
+              `"${d.id}"`,
+              `"${d.date || ''}"`,
+              `"${(d.remarks || '').replace(/"/g, '""')}"`,
+              d.amount
+            ];
+            csv += row.join(',') + '\n';
+          });
+        });
+      });
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.setAttribute('href', url);
+      link.setAttribute('download', `Peer_Mohalla_Masjid_Donations_${getTodayDateFormatted()}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      showToast('Exported CSV file for Excel!', 'success');
+    }
+
+    function backupDatabase() {
+      const fullDb = {
+        masjidData: masjidData,
+        pendingDonations: pendingDonations,
+        backupDate: new Date().toISOString()
+      };
+      const dataStr = JSON.stringify(fullDb, null, 2);
+      const blob = new Blob([dataStr], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `masjid_donations_backup_${getTodayDateFormatted()}.json`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      showToast('Complete Database backup JSON saved to your computer!', 'success');
+    }
+
+    function handleRestoreFile(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const imported = JSON.parse(e.target.result);
+          if (Array.isArray(imported)) {
+            masjidData = imported;
+          } else if (imported && imported.masjidData) {
+            masjidData = imported.masjidData;
+            if (imported.pendingDonations) pendingDonations = imported.pendingDonations;
+          } else {
+            showToast('Invalid backup file format!', 'error');
+            return;
+          }
+          saveDonations();
+          savePending();
+          renderApp();
+          showToast('Database restored successfully from file!', 'success');
+        } catch (err) {
+          console.error(err);
+          showToast('Failed to parse backup JSON file.', 'error');
+        }
+      };
+      reader.readAsText(file);
+      event.target.value = '';
+    }
+
+    function resetToOriginalData() {
+      if (confirm('Are you sure you want to reset all data back to the original PDF records (Grand Total: ₹ 3,09,900)? Any custom additions will be replaced.')) {
+        masjidData = JSON.parse(JSON.stringify(INITIAL_MASJID_DATA));
+        pendingDonations = JSON.parse(JSON.stringify(INITIAL_PENDING_DATA));
+        saveDonations();
+        savePending();
+        renderApp();
+        showToast('Reset to original records completed.', 'gold');
+      }
+    }
+
+    function toggleTheme() {
+      const body = document.documentElement;
+      const isDark = body.getAttribute('data-theme') === 'dark';
+      if (isDark) {
+        body.removeAttribute('data-theme');
+        document.getElementById('themeIcon').textContent = '🌙';
+        document.getElementById('themeLabel').textContent = 'Night Mode';
+        localStorage.setItem('masjid_theme', 'light');
+      } else {
+        body.setAttribute('data-theme', 'dark');
+        document.getElementById('themeIcon').textContent = '☀️';
+        document.getElementById('themeLabel').textContent = 'Day Mode';
+        localStorage.setItem('masjid_theme', 'dark');
+      }
+    }
+
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+
+      let icon = '✓';
+      if (type === 'error') icon = '✕';
+      if (type === 'gold') icon = '★';
+
+      toast.innerHTML = `<span style="font-weight:bold; font-size:1.1rem;">${icon}</span><span>${message}</span>`;
+      container.appendChild(toast);
+
+      setTimeout(() => toast.classList.add('show'), 50);
+
+      setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 350);
+      }, 3500);
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      if (localStorage.getItem('masjid_theme') === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        document.getElementById('themeIcon').textContent = '☀️';
+        document.getElementById('themeLabel').textContent = 'Day Mode';
+      }
+      loadData();
+    });
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        document.querySelectorAll('.modal-overlay.active').forEach(modal => {
+          modal.classList.remove('active');
+        });
+      }
+    });
+  </script>
+</body>
+</html>
